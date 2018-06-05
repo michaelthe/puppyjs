@@ -1,0 +1,19 @@
+{
+  "name": "puppyjs",
+  "version": "1.0.0",
+  "description": "puppeteer + jest + awesome-code = puppyjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/michaelthe/puppyjs.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/michaelthe/puppyjs/issues"
+  },
+  "homepage": "https://github.com/michaelthe/puppyjs#readme"
+}
