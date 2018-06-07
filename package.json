@@ -13,7 +13,7 @@
     "type": "git",
     "url": "git+https://github.com/michaelthe/puppyjs.git"
   },
-  "author": "",
+  "author": "Michael Theodorides, Petros Kyriakou",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/michaelthe/puppyjs/issues"
