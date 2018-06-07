@@ -34,10 +34,7 @@ class PuppeteerEnvironment extends NodeEnvironment {
 
       await page.setViewport({width: 1300, height: 1080})
 
-      console.log(url ? url : ('http://127.0.0.1:' + puppyConfig.PORT + '/' + puppyConfig.STATIC_INDEX))
-      if (url) {
-        await page.goto(url ? url : ('http://127.0.0.1:' + puppyConfig.PORT + '/' + puppyConfig.STATIC_INDEX))
-      }
+      await page.goto(url ? url : ('http://127.0.0.1:' + puppyConfig.PORT + '/' + puppyConfig.STATIC_INDEX))
 
       return page
     }
