@@ -1,6 +1,6 @@
 {
   "name": "puppyjs",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "puppeteer + jest + awesome-code = puppyjs",
   "main": "index.js",
   "scripts": {
@@ -27,7 +27,6 @@
     "figlet": "^1.2.0",
     "jest": "^23.1.0",
     "mkdirp": "^0.5.1",
-    "mz": "^2.7.0",
     "puppeteer": "^1.4.0",
     "rimraf": "^2.6.2"
   },
