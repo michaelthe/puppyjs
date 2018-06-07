@@ -7,4 +7,6 @@ cd ${dir}/..
 npm version patch # minor, major
 npm publish
 
+git push
+
 cd -
