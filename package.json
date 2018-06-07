@@ -30,5 +30,13 @@
     "mz": "^2.7.0",
     "puppeteer": "^1.4.0",
     "rimraf": "^2.6.2"
-  }
+  },
+  "keywords": [
+    "end-to-end",
+    "testing",
+    "puppeteer",
+    "jest",
+    "automation",
+    "web sockets"
+  ]
 }
