@@ -4,7 +4,10 @@
   "description": "puppeteer + jest + awesome-code = puppyjs",
   "main": "index.js",
   "scripts": {
-    "test": "puppy"
+    "ncu": "ncu",
+    "test": "puppy",
+    "prepublish": "npm version patch",
+    "postpublish": ". ./scripts/postpublish.sh"
   },
   "bin": {
     "puppy": "bin/puppy.js"
@@ -38,5 +41,8 @@
     "jest",
     "automation",
     "web sockets"
-  ]
+  ],
+  "devDependencies": {
+    "npm-check-updates": "^2.14.2"
+  }
 }

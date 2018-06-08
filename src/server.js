@@ -32,10 +32,6 @@ staticApp.use(express.static(puppyConfig.STATIC_DIR))
 ws(wsApp || apiApp || staticApp, internalApp)
 api(apiApp || staticApp, internalApp)
 
-staticApp.all('*', (req, res) => {
-  res.sendFile(puppyConfig.STATIC_INDEX, {root: puppyConfig.STATIC_DIR})
-})
-
 internalApp
   .listen(puppyConfig.PUPPY_PORT, () => {
     console.log(flag(`Puppy is listening on port ${puppyConfig.PUPPY_PORT}!`))
