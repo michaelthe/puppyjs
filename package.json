@@ -7,7 +7,7 @@
     "ncu": "ncu",
     "test": "puppy",
     "prepublish": "npm version patch",
-    "postpublish": ". ./scripts/postpublish.sh"
+    "postpublish": "git push && git push --tags"
   },
   "bin": {
     "puppy": "bin/puppy.js"
