@@ -1,24 +1,15 @@
 'use strict'
-const fs = require('fs')
+
 const cors = require('cors')
-const path = require('path')
 const chalk = require('chalk')
 const express = require('express')
 const bodyParser = require('body-parser')
 
 const ws = require('./ws')
 const api = require('./api')
-const statik = require('./static')
-
-const puppyConfig = require('../puppy.config.js')
+const puppyConfig = require('./config')
 
 const flag = chalk.bold.blueBright
-
-const configFile = path.resolve(process.cwd(), 'puppy.config.js')
-
-if (fs.existsSync(configFile)) {
-  Object.assign(puppyConfig, require(configFile))
-}
 
 let wsApp
 let apiApp

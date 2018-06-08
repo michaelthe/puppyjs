@@ -1,16 +1,9 @@
-const fs = require('fs')
-const path = require('path')
+const URL = require('url').URL
 const http = require('http')
 
-const puppyConfig = require('../puppy.config.js')
+const puppyConfig = require('./config')
 
-const configFile = path.resolve(process.cwd(), 'puppy.config.js')
-
-if (fs.existsSync(configFile)) {
-  Object.assign(puppyConfig, require(configFile))
-}
-
-const emit = async (path, data, options = {}) => {
+async function emit (path, data, options = {}) {
   return new Promise((resolve, reject) => {
     const payload = {
       'path': path,
@@ -57,7 +50,7 @@ const emit = async (path, data, options = {}) => {
   })
 }
 
-const register = async (data) => {
+async function register (data) {
   return new Promise((resolve, reject) => {
     try {
       var dataString = JSON.stringify(data)
@@ -96,4 +89,23 @@ const register = async (data) => {
   })
 }
 
-module.exports = {emit, register}
+async function newPage (url = '') {
+  const page = await this.newPage()
+
+  await page.setViewport({width: 1300, height: 1080})
+
+  let isURL
+  try {
+    isURL = !!(new URL(url))
+  } catch (e) {
+    isURL = false
+  }
+
+  const constructedURL = isURL ? url : (`http://127.0.0.1:${puppyConfig.PORT}/${url.replace(/^\//, '')}`)
+
+  await page.goto(constructedURL)
+
+  return page
+}
+
+module.exports = {emit, register, newPage}

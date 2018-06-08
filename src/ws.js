@@ -4,17 +4,11 @@ const path = require('path')
 const chalk = require('chalk')
 const expressuws = require('express-uws')
 
-const puppyConfig = require('../puppy.config.js')
+const puppyConfig = require('./config')
 
 const socket = chalk.bold.greenBright
 
 function initialize (wsApp, internalApp) {
-  const configFile = path.resolve(process.cwd(), 'puppy.config.js')
-
-  if (fs.existsSync(configFile)) {
-    Object.assign(puppyConfig, require(configFile))
-  }
-
   const expressUms = expressuws(wsApp)// eslint-disable-line
 
   const wss = expressUms.getWss()
