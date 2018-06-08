@@ -36,7 +36,8 @@ if (puppyConfig.WS_PORT) {
   wsApp = express()
 }
 
-statik(staticApp)
+staticApp.use(express.static(puppyConfig.STATIC_DIR))
+
 ws(wsApp || apiApp || staticApp, internalApp)
 api(apiApp || staticApp, internalApp)
 

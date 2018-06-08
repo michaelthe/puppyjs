@@ -1,7 +1,7 @@
 const path = require('path')
 
 module.exports = {
-  PORT: 8080,
+  PORT: 9090,
   WS_PORT: null,
   API_PORT: null,
   PUPPY_PORT: 7877,

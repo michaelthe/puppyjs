@@ -4,6 +4,7 @@ const path = require('path')
 const helpers = require('../src/helpers.js')
 const puppeteer = require('puppeteer')
 const NodeEnvironment = require('jest-environment-node')
+const URL = require('url').URL
 
 const puppyConfig = require('../puppy.config.js')
 
@@ -29,12 +30,21 @@ class PuppeteerEnvironment extends NodeEnvironment {
       browserWSEndpoint: wsEndpoint
     })
 
-    const newPage = async (url) => {
+    const newPage = async (url = '') => {
       const page = await browser.newPage()
 
       await page.setViewport({width: 1300, height: 1080})
 
-      await page.goto(url ? url : ('http://127.0.0.1:' + puppyConfig.PORT + '/' + puppyConfig.STATIC_INDEX.replace(/^\//, '')))
+      let isURL
+      try {
+        isURL = !!(new URL(url))
+      } catch (e) {
+        isURL = false
+      }
+
+      const constructedURL = isURL ? url : (`http://127.0.0.1:${puppyConfig.PORT}/${url}`)
+
+      await page.goto(constructedURL)
 
       return page
     }
