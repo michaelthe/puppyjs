@@ -3,16 +3,8 @@ const http = require('http')
 
 const puppyConfig = require('./config')
 
-async function emit (path, data, options = {}) {
+async function emit (path, payload, options = {}) {
   return new Promise((resolve, reject) => {
-    const payload = {
-      'path': path,
-      'method': options.method || 'POST',
-      'params': options.params || {},
-      'query': options.query || {},
-      'body': data
-    }
-
     try {
       var dataString = JSON.stringify(payload)
     } catch (error) {
