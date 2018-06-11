@@ -40,6 +40,7 @@ internalApp
 staticApp
   .listen(puppyConfig.PORT, () => {
     console.log(flag(`Puppy static is listening on port ${puppyConfig.PORT}!`))
+    console.log(flag(`Puppy static dir is: ${puppyConfig.STATIC_DIR}!`))
     console.log(flag(`Puppy static index file: ${puppyConfig.STATIC_INDEX}!`))
 
     if (!apiApp) {
