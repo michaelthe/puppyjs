@@ -12,7 +12,11 @@ module.exports = async function () {
 
   const browser = await puppeteer.launch({
     headless: process.env.HEADLESS === 'true',
-    args: [`--window-size=${width},${height}`],
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      `--window-size=${width},${height}`,
+    ],
     devtools: process.env.HEADLESS !== 'true'
   })
 

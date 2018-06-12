@@ -6,8 +6,8 @@
   "scripts": {
     "ncu": "ncu",
     "test": "puppy",
-    "prepublish": "npm version patch",
-    "postpublish": "git push && git push --tags"
+    "postpublish": "git push && git push --tags",
+    "prepublishOnly": "npm version patch"
   },
   "bin": {
     "puppy": "bin/puppy.js"
@@ -35,14 +35,14 @@
     "rimraf": "^2.6.2"
   },
   "keywords": [
-    "end-to-end",
+    "api",
+    "e2e",
+    "jest",
+    "mock",
     "testing",
     "puppeteer",
-    "jest",
+    "end-to-end",
     "automation",
     "web sockets"
-  ],
-  "devDependencies": {
-    "npm-check-updates": "^2.14.2"
-  }
+  ]
 }
