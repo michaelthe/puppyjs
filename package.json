@@ -1,6 +1,6 @@
 {
-  "name": "@puppy/core",
-  "version": "0.0.4",
+  "name": "@puppyjs/core",
+  "version": "0.0.1",
   "description": "puppeteer + jest + awesome-code = puppyjs",
   "main": "index.js",
   "scripts": {
