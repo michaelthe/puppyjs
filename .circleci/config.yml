@@ -1,4 +1,5 @@
 version: 2
+
 jobs:
   build:
     environment:
@@ -8,9 +9,7 @@ jobs:
         - master
     docker:
       - image: michaelth/node-chrome
-
     working_directory: ~/repo
-
     steps:
       - checkout
 
