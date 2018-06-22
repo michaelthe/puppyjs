@@ -25,7 +25,7 @@ function initialize (wsApp, internalApp) {
 
     wss.clients.forEach(client => client.send(JSON.stringify(message)))
 
-    res.send('ok')
+    setTimeout(() => res.send('ok'), 50)
   })
 }
 
