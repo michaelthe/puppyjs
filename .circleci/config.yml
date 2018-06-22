@@ -1,6 +1,11 @@
 version: 2
 jobs:
   build:
+    environment:
+      - HEADLESS: "true"
+    branches:
+      only:
+        - master
     docker:
       - image: michaelth/node-chrome
 
