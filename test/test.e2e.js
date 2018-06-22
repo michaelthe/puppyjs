@@ -17,14 +17,26 @@ describe('test', () => {
     await page.close()
   })
 
+  it('should work with localhost:8080', async () => {
+    const page = await puppy.newPage('http://localhost:8080')
+    await page.waitFor('.test')
+    await page.close()
+  })
+
+  it('should work with localhost:8080/index.html', async () => {
+    const page = await puppy.newPage('http://localhost:8080/index.html')
+    await page.waitFor('.test')
+    await page.close()
+  })
+
   it('should work with 127.0.0.1:8080', async () => {
-    const page = await puppy.newPage('127.0.0.1:8080')
+    const page = await puppy.newPage('http://127.0.0.1:8080')
     await page.waitFor('.test')
     await page.close()
   })
 
   it('should work with 127.0.0.1:8080/index.html', async () => {
-    const page = await puppy.newPage('127.0.0.1:8080/index.html')
+    const page = await puppy.newPage('http://127.0.0.1:8080/index.html')
     await page.waitFor('.test')
     await page.close()
   })

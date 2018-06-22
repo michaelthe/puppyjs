@@ -93,7 +93,7 @@ async function newPage (url = '') {
     isURL = false
   }
 
-  const path = url || puppyConfig.STATIC_INDEX
+  const path = url.replace(/localhost/, '127.0.0.1') || puppyConfig.STATIC_INDEX
   const constructedURL = isURL ? url : (`http://127.0.0.1:${puppyConfig.PORT}/${path.replace(/^\//, '')}`)
 
   await page.goto(constructedURL)
