@@ -40,13 +40,20 @@ function initialize (apiApp, internalApp) {
       return
     }
 
-    let data = apiOnDemandResponses[req.url] || apiDefaultResponses[req.url]
+    const method = req.method
+
+    const data = apiOnDemandResponses[req.url] && apiOnDemandResponses[req.url][req.method]
+      || apiDefaultResponses[req.url] && apiDefaultResponses[req.url][req.method]
+      || apiDefaultResponses[req.url]['DEFAULT']
+      || undefined
 
     if (!data) {
-      return console.warn(warning(`Puppy API: unknown URL: ${req.url}`))
+      console.warn(error(`Puppy API: HTTP VERB (${method}) not supported for this route, please update your API`))
+      res.status(404)
+      res.end(`Puppy API: HTTP VERB (${method}) not supported for this route, please update your API`)
     }
 
-    const body = data.body ? JSON.stringify(data.body) : 'ok'
+    const body = data.body || 'EMPTY BODY'
     const status = data.status || 200
     const headers = data.headers || []
 
