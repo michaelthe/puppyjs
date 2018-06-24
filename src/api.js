@@ -6,6 +6,7 @@ const chalk = require('chalk')
 const bodyParser = require('body-parser')
 
 const log = chalk.bold.magenta
+const error = chalk.keyword('red')
 const warning = chalk.keyword('orange')
 
 function initialize (apiApp, internalApp) {
@@ -44,13 +45,14 @@ function initialize (apiApp, internalApp) {
 
     const data = apiOnDemandResponses[req.url] && apiOnDemandResponses[req.url][req.method]
       || apiDefaultResponses[req.url] && apiDefaultResponses[req.url][req.method]
-      || apiDefaultResponses[req.url]['DEFAULT']
+      || apiDefaultResponses[req.url] && apiDefaultResponses[req.url]['DEFAULT']
       || undefined
 
     if (!data) {
       console.warn(error(`Puppy API: HTTP VERB (${method}) not supported for this route, please update your API`))
       res.status(404)
       res.end(`Puppy API: HTTP VERB (${method}) not supported for this route, please update your API`)
+      return
     }
 
     const body = data.body || 'EMPTY BODY'

@@ -8,6 +8,7 @@ module.exports = {
   'ws-port': 8080,
   'api-port': 8080,
 
+  'verbose': false,
   'headless': false,
 
   'ws-url': '/ws',

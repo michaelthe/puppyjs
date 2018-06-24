@@ -43,6 +43,7 @@ const puppyConfig = require('../puppy.config.js')
   const INTERNAL_PORT = (await findFreePort(65000, 65535)).pop()
 
   const VERBOSE = arguments['verbose'] || puppyConfig['verbose'] || false
+  const HEADLESS = arguments['headless'] || puppyConfig['headless'] || false
 
   const WS_URL = arguments['ws-url'] || puppyConfig['ws-url']
   const INDEX_FILE = arguments['index-file'] || puppyConfig['index-file']
@@ -50,20 +51,26 @@ const puppyConfig = require('../puppy.config.js')
 
   console.log(chalk.cyan(logo(arguments.headless)))
 
-  const server = spawn(`node`, ['--inspect', serverFile], {
+  const server = spawn(`node`, ['--inspect', serverFile, '--colors'], {
     pwd: process.cwd(),
-    stdio: 'inherit',
-    env: Object.assign({}, process.env, {WS, API, PORT, WS_PORT, API_PORT, INTERNAL_PORT, VERBOSE, WS_URL, INDEX_FILE, STATIC_DIR})
+    stdio: 'pipe',
+    env: Object.assign({}, process.env, {WS, API, PORT, WS_PORT, API_PORT, INTERNAL_PORT, VERBOSE, HEADLESS, WS_URL, INDEX_FILE, STATIC_DIR})
   })
+
+  server.stdout.pipe(process.stdout)
+  server.stderr.pipe(process.stderr)
 
   if (arguments._.includes('serve') || arguments._.includes('s')) {
     return console.log('serving only')
   }
 
-  const jest = spawn('jest', ['-i', '-c', jestConfigFile, '--rootDir', process.cwd()], {
-    stdio: 'inherit',
-    env: Object.assign({}, process.env, {WS, API, PORT, WS_PORT, API_PORT, INTERNAL_PORT, VERBOSE, WS_URL, INDEX_FILE, STATIC_DIR})
+  const jest = spawn('jest', ['-i', '--colors', '-c', jestConfigFile, '--rootDir', process.cwd()], {
+    stdio: 'pipe',
+    env: Object.assign({}, process.env, {WS, API, PORT, WS_PORT, API_PORT, INTERNAL_PORT, VERBOSE, HEADLESS, WS_URL, INDEX_FILE, STATIC_DIR})
   })
+
+  jest.stdout.pipe(process.stdout)
+  jest.stderr.pipe(process.stderr)
 
   process.on('SIGHUP', () => server.kill('SIGHUP'))
   process.on('SIGTERM', () => server.kill('SIGHUP'))

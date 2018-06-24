@@ -2,11 +2,6 @@ version: 2
 
 jobs:
   build:
-    environment:
-      - HEADLESS: "true"
-    branches:
-      only:
-        - master
     docker:
       - image: michaelth/node-chrome
     working_directory: ~/repo
@@ -25,4 +20,4 @@ jobs:
           paths:
             - node_modules
 
-      - run: npm test
+      - run: npm test --headless
