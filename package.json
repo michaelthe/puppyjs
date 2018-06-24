@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "ncu": "ncu",
-    "test": "node bin/puppy.js",
+    "test": "node bin/puppy.js --headless",
     "postpublish": "git push && git push --tags",
     "prepublishOnly": "npm version patch"
   },
