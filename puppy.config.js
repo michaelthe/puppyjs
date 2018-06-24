@@ -1,15 +1,17 @@
 const path = require('path')
 
 module.exports = {
-  PORT: 8080,
-  WS_PORT: null,
-  API_PORT: null,
-  PUPPY_PORT: 7877,
+  'ws': path.resolve(process.cwd(), 'puppy.ws.js'),
+  'api': path.resolve(process.cwd(), 'puppy.api.js'),
 
-  HEADLESS: true,
+  'port': 8080,
+  'ws-port': 8080,
+  'api-port': 8080,
 
-  WS_URL: '/socket',
+  'verbose': false,
+  'headless': false,
 
-  STATIC_DIR: path.resolve(process.cwd(), 'dist'),
-  STATIC_INDEX: 'index.html'
+  'ws-url': '/ws',
+  'index-file': 'index.html',
+  'static-dir': path.resolve(process.cwd(), 'dist'),
 }

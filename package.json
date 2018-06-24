@@ -1,13 +1,12 @@
 {
   "name": "puppyjs",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "puppeteer + jest + awesome-code = puppyjs",
   "main": "index.js",
   "scripts": {
     "ncu": "ncu",
-    "test": "node bin/puppy.js",
-    "postpublish": "git push && git push --tags",
-    "prepublishOnly": "npm version patch"
+    "test": "node bin/puppy.js --headless",
+    "release": "scripts/release.sh"
   },
   "bin": {
     "puppy": "bin/puppy.js"
@@ -29,7 +28,9 @@
     "express": "^4.16.3",
     "express-uws": "^3.0.1",
     "figlet": "^1.2.0",
+    "find-free-port": "^1.2.0",
     "jest": "^23.1.0",
+    "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
     "puppeteer": "^1.4.0",
     "rimraf": "^2.6.2"

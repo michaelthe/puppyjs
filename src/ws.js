@@ -1,10 +1,6 @@
 'use strict'
-const fs = require('fs')
-const path = require('path')
 const chalk = require('chalk')
 const expressuws = require('express-uws')
-
-const puppyConfig = require('./config')
 
 const socket = chalk.bold.greenBright
 
@@ -13,7 +9,7 @@ function initialize (wsApp, internalApp) {
 
   const wss = expressUms.getWss()
 
-  wsApp.ws(puppyConfig.WS_URL, ws => {
+  wsApp.ws(process.env.WS_URL, ws => {
     console.debug(socket('Puppy ws client connected'))
     ws.on('message', message => {
       console.log(socket('Puppy ws received message: %s'), message)
