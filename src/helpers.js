@@ -1,8 +1,6 @@
 const URL = require('url').URL
 const http = require('http')
 
-const puppyConfig = require('./config')
-
 async function emit (payload) {
   return new Promise((resolve, reject) => {
     try {
@@ -13,7 +11,7 @@ async function emit (payload) {
 
     let requestData = {
       host: '127.0.0.1',
-      port: puppyConfig.PUPPY_PORT,
+      port: process.env.INTERNAL_PORT,
       path: '/emit',
       method: 'POST',
       headers: {
@@ -52,7 +50,7 @@ async function register (data) {
 
     let options = {
       host: '127.0.0.1',
-      port: puppyConfig.PUPPY_PORT,
+      port: process.env.INTERNAL_PORT,
       path: '/register',
       method: 'POST',
       headers: {
@@ -93,8 +91,8 @@ async function newPage (url = '') {
     isURL = false
   }
 
-  const path = url.replace(/localhost/, '127.0.0.1') || puppyConfig.STATIC_INDEX
-  const constructedURL = isURL ? url : (`http://127.0.0.1:${puppyConfig.PORT}/${path.replace(/^\//, '')}`)
+  const path = url.replace(/localhost/, '127.0.0.1') || process.env.INDEX_FILE
+  const constructedURL = isURL ? url : (`http://127.0.0.1:${process.env.PORT}/${path.replace(/^\//, '')}`)
 
   await page.goto(constructedURL)
 

@@ -12,7 +12,7 @@ function initialize (apiApp, internalApp) {
   const apiDefaultResponses = {}
   const apiOnDemandResponses = {}
 
-  const apiFile = path.resolve(process.cwd(), 'puppy.api.js')
+  const apiFile = path.resolve(process.cwd(), process.env.API)
 
   if (fs.existsSync(apiFile)) {
     Object.assign(apiDefaultResponses, require(apiFile))
