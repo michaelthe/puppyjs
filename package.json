@@ -6,7 +6,7 @@
   "scripts": {
     "ncu": "ncu",
     "test": "node bin/puppy.js --headless",
-    "patch": "npm version patch && git push && git push --tags"
+    "release": "scripts/release.sh"
   },
   "bin": {
     "puppy": "bin/puppy.js"
