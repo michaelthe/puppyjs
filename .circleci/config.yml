@@ -21,3 +21,4 @@ jobs:
             - node_modules
 
       - run: npm test --headless
+      - run: scripts/publish.sh
