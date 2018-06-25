@@ -1,16 +1,45 @@
 'use strict'
 const chalk = require('chalk')
-const expressuws = require('express-uws')
-
+const expressuws = require('express-ws')
+const path = require('path')
+const fs = require('fs')
+const chokidar = require('chokidar')
 const socket = chalk.bold.greenBright
 
 function initialize (wsApp, internalApp) {
   const expressUms = expressuws(wsApp)// eslint-disable-line
 
   const wss = expressUms.getWss()
+  const wsOnDemandResponses = {}
+
+  let wsFile = path.resolve(process.cwd(), process.env.WS)
+  let wsDefaultResponses = {}
+
+  if (fs.existsSync(wsFile)) {
+    wsDefaultResponses = require(wsFile)
+  }
+
+  chokidar.watch(wsFile, {usePolling: true})
+    .on('change', (path, event) => {
+      delete require.cache[require.resolve(path)]
+      wsDefaultResponses = require(path)
+    })
 
   wsApp.ws(process.env.WS_URL, ws => {
     console.debug(socket('Puppy ws client connected'))
+
+    wsDefaultResponses.forEach(event => {
+      if (event.interval) {
+        setTimeout(() => {
+          setInterval(() => {
+            event.messages.forEach(message => {
+              ws.send(JSON.stringify(message))
+            })
+          }, event.interval)
+        }, event.delay || 0)
+      }
+    })
+
     ws.on('message', message => {
       console.log(socket('Puppy ws received message: %s'), message)
     })
