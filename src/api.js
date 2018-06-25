@@ -17,7 +17,7 @@ function initialize (apiApp, internalApp) {
   let apiDefaultResponses = {}
 
   if (fs.existsSync(apiFile)) {
-    Object.assign(apiDefaultResponses, require(apiFile))
+    apiDefaultResponses = require(apiFile)
   }
 
   chokidar.watch(apiFile, {persistent: true, usePolling: true})
