@@ -33,6 +33,7 @@
     "jest": "^23.1.0",
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
+    "node-fetch": "^2.1.2",
     "puppeteer": "^1.4.0",
     "rimraf": "^2.6.2"
   },

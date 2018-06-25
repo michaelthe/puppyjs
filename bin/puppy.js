@@ -1,9 +1,10 @@
 #! /usr/bin/env node
-
 const fs = require('fs')
 const path = require('path')
+const fetch = require('node-fetch')
 const chalk = require('chalk')
 const spawn = require('child_process').spawn
+const mkdirp = require('mkdirp')
 const minimist = require('minimist')
 const findFreePort = require('find-free-port')
 
@@ -24,7 +25,7 @@ const puppyConfig = require('../puppy.config.js')
     return console.log('Version:', version)
   }
 
-  if (arguments.help) {
+  if (arguments.help || !arguments._.find(arg => ['s', 't', 'serve', 'test'].includes(arg))) {
     return console.log(help())
   }
 
@@ -40,7 +41,6 @@ const puppyConfig = require('../puppy.config.js')
   const PORT = arguments['port'] || puppyConfig['port']
   const WS_PORT = arguments['ws-port'] || arguments['api-port'] || arguments['port'] || puppyConfig['ws-api'] || puppyConfig['api-port'] || puppyConfig['port']
   const API_PORT = arguments['api-port'] || arguments['port'] || puppyConfig['api-port'] || puppyConfig['port']
-  const INTERNAL_PORT = (await findFreePort(65000, 65535)).pop()
 
   const VERBOSE = arguments['verbose'] || puppyConfig['verbose'] || false
   const HEADLESS = arguments['headless'] || puppyConfig['headless'] || false
@@ -51,20 +51,35 @@ const puppyConfig = require('../puppy.config.js')
 
   console.log(chalk.cyan(logo(arguments.headless)))
 
-  const server = spawn(`node`, ['--inspect', serverFile, '--colors'], {
-    pwd: process.cwd(),
-    stdio: 'pipe',
-    env: Object.assign({}, process.env, {WS, API, PORT, WS_PORT, API_PORT, INTERNAL_PORT, VERBOSE, HEADLESS, WS_URL, INDEX_FILE, STATIC_DIR})
-  })
+  let server
+  let INTERNAL_PORT
+  mkdirp.sync(path.join(process.cwd(), '.puppy'))
+  if (fs.existsSync(path.join(process.cwd(), '.puppy') + '/internal-port')) {
+    INTERNAL_PORT = fs.readFileSync(path.join(process.cwd(), '.puppy') + '/internal-port')
+  }
 
-  server.stdout.pipe(process.stdout)
-  server.stderr.pipe(process.stderr)
+  try {
+    await fetch(`http://127.0.0.1:${INTERNAL_PORT}/status`)
+    console.log(chalk.cyan('Server is running...'))
+  } catch (e) {
+    INTERNAL_PORT = (await findFreePort(65000, 65535)).pop()
+    fs.writeFileSync(path.join(process.cwd(), '.puppy') + '/internal-port', INTERNAL_PORT)
 
-  if (arguments._.includes('serve') || arguments._.includes('s')) {
+    server = spawn(`node`, ['--inspect', serverFile, '--colors'], {
+      pwd: process.cwd(),
+      stdio: 'pipe',
+      env: Object.assign({}, process.env, {WS, API, PORT, WS_PORT, API_PORT, INTERNAL_PORT, VERBOSE, HEADLESS, WS_URL, INDEX_FILE, STATIC_DIR})
+    })
+
+    server.stdout.pipe(process.stdout)
+    server.stderr.pipe(process.stderr)
+  }
+
+  if (arguments._.find(arg => ['s', 'serve'].includes(arg))) {
     return console.log('serving only')
   }
 
-  const jest = spawn('jest', ['-i', '--colors', '-c', jestConfigFile, '--rootDir', process.cwd()], {
+  const jest = spawn('jest', ['--colors', '--runInBand', '--config', jestConfigFile, '--rootDir', process.cwd(), ...arguments._.filter(arg => !['s', 't', 'serve', 'test'].includes(arg))], {
     stdio: 'pipe',
     env: Object.assign({}, process.env, {WS, API, PORT, WS_PORT, API_PORT, INTERNAL_PORT, VERBOSE, HEADLESS, WS_URL, INDEX_FILE, STATIC_DIR})
   })
@@ -72,12 +87,14 @@ const puppyConfig = require('../puppy.config.js')
   jest.stdout.pipe(process.stdout)
   jest.stderr.pipe(process.stderr)
 
-  process.on('SIGHUP', () => server.kill('SIGHUP'))
-  process.on('SIGTERM', () => server.kill('SIGHUP'))
+  const killServer = () => server && server.kill('SIGHUP')
+
+  process.on('SIGHUP', () => killServer())
+  process.on('SIGTERM', () => killServer())
 
   jest
     .on('close', code => {
-      server.kill('SIGHUP')
+      killServer()
       process.exit(code)
     })
 })()
