@@ -3,6 +3,7 @@ const fs = require('fs')
 const path = require('path')
 const cors = require('cors')
 const chalk = require('chalk')
+const chokidar = require('chokidar')
 const bodyParser = require('body-parser')
 
 const log = chalk.bold.magenta
@@ -10,14 +11,20 @@ const error = chalk.keyword('red')
 const warning = chalk.keyword('orange')
 
 function initialize (apiApp, internalApp) {
-  const apiDefaultResponses = {}
   const apiOnDemandResponses = {}
 
-  const apiFile = path.resolve(process.cwd(), process.env.API)
+  let apiFile = path.resolve(process.cwd(), process.env.API)
+  let apiDefaultResponses = {}
 
   if (fs.existsSync(apiFile)) {
-    Object.assign(apiDefaultResponses, require(apiFile))
+    apiDefaultResponses = require(apiFile)
   }
+
+  chokidar.watch(apiFile, {persistent: true, usePolling: true})
+    .on('change', (path, event) => {
+      delete require.cache[require.resolve(path)]
+      apiDefaultResponses = require(path)
+    })
 
   apiApp.use(cors())
   apiApp.use(bodyParser.json())
