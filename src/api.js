@@ -23,7 +23,7 @@ function initialize (apiApp, internalApp) {
   chokidar.watch(apiFile, {persistent: true, usePolling: true})
     .on('change', (path, event) => {
       delete require.cache[require.resolve(path)]
-      apiDefaultResponses = Object.assign({}, require(path))
+      apiDefaultResponses = require(path)
     })
 
   apiApp.use(cors())
