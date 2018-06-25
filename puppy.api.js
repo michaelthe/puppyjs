@@ -30,6 +30,11 @@ const API = {
       status: 200,
       body: 'hello its a default'
     }
+  },
+  '/api/user': {
+    'PATCH': {
+      body: 'hello from a PATCH'
+    }
   }
 }
 
