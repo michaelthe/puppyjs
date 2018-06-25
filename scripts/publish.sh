@@ -17,4 +17,6 @@ if [ $NPM_VERSION != $LOCAL_VERSION ] ; then
     echo "Publishing..."
     npm publish
     echo "Published"
+else
+    echo 'Already published'
 fi

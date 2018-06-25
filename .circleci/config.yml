@@ -20,5 +20,10 @@ jobs:
           paths:
             - node_modules
 
-      - run: npm test --headless
-      - run: scripts/publish.sh
+      - run:
+          name: Running tests
+          command: npm test --headless
+
+      - run:
+          name: Publish to npm
+          command: scripts/publish.sh
