@@ -29,14 +29,23 @@ function initialize (wsApp, internalApp) {
     console.debug(socket('Puppy ws client connected'))
 
     wsDefaultResponses.forEach(event => {
-      if (event.interval) {
-        setTimeout(() => {
-          setInterval(() => {
+      let intervalRef
+      setTimeout(() => {
+        intervalRef = setInterval(() => {
+          if (typeof event.messages === 'function') {
+            ws.send(JSON.stringify(event.messages.call(event.messages)))
+          }
+
+          if (Array.isArray(event.messages)) {
             event.messages.forEach(message => {
               ws.send(JSON.stringify(message))
             })
-          }, event.interval)
-        }, event.delay || 0)
+          }
+        }, event.interval)
+      }, event.delay || 0)
+
+      if (!event.interval) {
+        intervalRef.clear()
       }
     })
 
