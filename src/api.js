@@ -72,6 +72,10 @@ function initialize (apiApp, internalApp) {
       return
     }
 
+    if (process.env.VERBOSE === 'true') {
+      console.log(`Puppy API: method: ${req.method} url: ${req.url}`)
+    }
+
     if (apiOnDemandResponses[req.url]) {
       delete apiOnDemandResponses[req.url][req.method]
       delete apiOnDemandResponses[req.url]['DEFAULT']
@@ -82,6 +86,8 @@ function initialize (apiApp, internalApp) {
     const headers = data.headers || {}
 
     Object.keys(headers).forEach(key => res.setHeader(key, headers[key]))
+
+    res.status(status)
 
     res.end(body)
   })
