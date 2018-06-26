@@ -18,3 +18,6 @@ lib-cov
 coverage
 node_modules/
 npm-debug.log*
+
+.cache
+/client/dist

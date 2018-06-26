@@ -1,0 +1,23 @@
+{
+  "name": "client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "npx parcel"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "material-design-icons-iconfont": "^3.0.3",
+    "vue": "^2.5.16",
+    "vuetify": "^1.0.19"
+  },
+  "devDependencies": {
+    "@vue/component-compiler-utils": "^2.0.0",
+    "babel-preset-env": "^1.7.0",
+    "node-sass": "^4.9.0",
+    "parcel-bundler": "^1.9.3",
+    "parcel-plugin-vue": "^1.5.0"
+  }
+}
