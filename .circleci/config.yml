@@ -1,7 +1,7 @@
 version: 2
 
 jobs:
-  build:
+  test:
     docker:
       - image: michaelth/node-chrome
     working_directory: ~/repo
@@ -23,6 +23,18 @@ jobs:
       - run:
           name: Running tests
           command: npm test --headless
+
+  publish:
+    working_directory: ~/repo
+    docker:
+      - image: michaelth/node-chrome
+    requires:
+      - test
+    branches:
+      only:
+        - master
+    steps:
+      - checkout
 
       - run:
           name: Publish to npm
