@@ -1,4 +1,4 @@
-const API = {
+module.exports = {
   '/api/users': {
     'GET': {
       headers: {
@@ -31,5 +31,3 @@ const API = {
     }
   }
 }
-
-module.exports = API

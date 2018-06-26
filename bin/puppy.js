@@ -61,11 +61,17 @@ const puppyConfig = require('../puppy.config.js')
   try {
     let response = await fetch(`http://127.0.0.1:${INTERNAL_PORT}/status`)
 
+    // there is no previous process running
+    // -> throw error so that a new process can start
+    // in catch block
     if (response.status !== 200) {
       throw new Error('some error')
     }
 
-    console.log(chalk.cyan('Mock servers are running...'))
+    if (arguments._.find(arg => ['s', 'serve'].includes(arg))) {
+      return console.log(chalk.bold.red('Mock servers are running on another process already'))
+    }
+
   } catch (e) {
     INTERNAL_PORT = (await findFreePort(65000, 65535)).pop()
     fs.writeFileSync(path.join(process.cwd(), '.puppy') + '/internal-port', INTERNAL_PORT)
@@ -81,7 +87,7 @@ const puppyConfig = require('../puppy.config.js')
   }
 
   if (arguments._.find(arg => ['s', 'serve'].includes(arg))) {
-    return console.log(chalk.blue('serving only'))
+    return console.log(chalk.bold.cyanBright.bgCyan(`Serving ${process.cwd()}`))
   }
 
   const jest = spawn('jest', ['--colors', '--runInBand', '--config', jestConfigFile, '--rootDir', process.cwd(), ...arguments._.filter(arg => !['s', 't', 'serve', 'test'].includes(arg))], {
