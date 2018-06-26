@@ -10,7 +10,7 @@ puppy argument [options] [test-file]
    -h  --help:          show this help
    -v:                  verbose
        --version:       version
-       --inspect:       pass the inspect flag to chrome
+       --inspect:       pass the inspect flag to node
        
        --ws:            web socket setup file
        --api:           api setup file
