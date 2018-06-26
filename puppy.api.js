@@ -1,37 +1,31 @@
 const API = {
   '/api/users': {
     'GET': {
-      headers: [
-        {
-          key: 'X-Session-ID',
-          value: '234905823409578'
-        }
-      ],
+      headers: {
+        'Authorization': 'Bearer some-token'
+      },
       status: 200,
       body: 'hello its a GET'
     },
     'POST': {
-      headers: [
-        {
-          key: 'X-Session-ID',
-          value: '234905823409578'
-        }
-      ],
+      headers: {
+        'Authorization': 'Bearer some-token'
+      },
       status: 200,
       body: 'hello its a POST'
     },
     'DEFAULT': {
-      headers: [
-        {
-          key: 'X-Session-ID',
-          value: '234905823409578'
-        }
-      ],
+      headers: {
+        'Authorization': 'Bearer some-token'
+      },
       status: 200,
       body: 'hello its a default'
     }
   },
   '/api/user': {
+    headers: {
+      'Authorization': 'Bearer some-token'
+    },
     'PATCH': {
       body: 'hello from a PATCH'
     }
