@@ -76,11 +76,19 @@ const puppyConfig = require('../puppy.config.js')
     INTERNAL_PORT = (await findFreePort(65000, 65535)).pop()
     fs.writeFileSync(path.join(process.cwd(), '.puppy') + '/internal-port', INTERNAL_PORT)
 
-    server = spawn(`node`, ['--inspect', serverFile, '--colors'], {
+    const serverArguments = [serverFile, '--colors']
+
+    if (arguments.inspect) {
+      serverArguments.push('--inspect')
+    }
+
+    const serverOptions = {
       pwd: process.cwd(),
       stdio: 'pipe',
       env: Object.assign({}, process.env, {WS, API, PORT, WS_PORT, API_PORT, INTERNAL_PORT, VERBOSE, HEADLESS, WS_URL, INDEX_FILE, STATIC_DIR})
-    })
+    }
+
+    server = spawn(`node`, serverArguments, serverOptions)
 
     server.stdout.pipe(process.stdout)
     server.stderr.pipe(process.stderr)
@@ -90,10 +98,14 @@ const puppyConfig = require('../puppy.config.js')
     return console.log(chalk.bold.cyanBright.bgCyan(`Serving ${process.cwd()}`))
   }
 
-  const jest = spawn('jest', ['--colors', '--runInBand', '--config', jestConfigFile, '--rootDir', process.cwd(), ...arguments._.filter(arg => !['s', 't', 'serve', 'test'].includes(arg))], {
+  const jestArguments = ['--colors', '--runInBand', '--config', jestConfigFile, '--rootDir', process.cwd(), ...arguments._.filter(arg => !['s', 't', 'serve', 'test'].includes(arg))]
+
+  const jestOptions = {
     stdio: 'pipe',
     env: Object.assign({}, process.env, {WS, API, PORT, WS_PORT, API_PORT, INTERNAL_PORT, VERBOSE, HEADLESS, WS_URL, INDEX_FILE, STATIC_DIR})
-  })
+  }
+
+  const jest = spawn('jest', jestArguments, jestOptions)
 
   jest.stdout.pipe(process.stdout)
   jest.stderr.pipe(process.stderr)
