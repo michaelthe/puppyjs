@@ -28,9 +28,6 @@ jobs:
     working_directory: ~/repo
     docker:
       - image: michaelth/node-chrome
-    branches:
-      only:
-        - master
     steps:
       - checkout
       - run:
@@ -45,3 +42,6 @@ workflows:
       - publish:
           requires:
             - test
+          filters:
+            branches:
+              only: master
