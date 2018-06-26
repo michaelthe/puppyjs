@@ -26,7 +26,10 @@ function initialize (wsApp, internalApp) {
   chokidar
     .watch(wsFile, {usePolling: true})
     .on('change', path => {
-      console.log(chalk.bold.cyan('Puppy WS: Changes detected, reloading file. Refresh browser to view changes'))
+      if (process.env.VERBOSE === 'true') {
+        console.log(chalk.bold.cyan('Puppy WS: Changes detected, reloading file. Refresh browser to view changes'))
+      }
+
       delete require.cache[require.resolve(path)]
       wsDefaultResponses = require(path)
 
@@ -38,14 +41,19 @@ function initialize (wsApp, internalApp) {
     })
 
   wsApp.ws(process.env.WS_URL, ws => {
-    console.debug(socket('Puppy WS: Client connected'))
+    if (process.env.VERBOSE === 'true') {
+      console.debug(socket('Puppy WS: Client connected'))
+    }
 
     wsDefaultResponses.forEach(event => {
       const timeout = setTimeout(async () => {
         const _emitMessage = async messages => {
 
           if (ws.readyState !== 1) {
-            if (process.env.VERBOSE) { console.log(chalk.keyword('orange')('Puppy WS: Clearing previous timeout and interval for event due to socket disconnection')) }
+            if (process.env.VERBOSE === 'true') {
+              console.log(chalk.keyword('orange')('Puppy WS: Clearing previous timeout and interval for event due to socket disconnection'))
+            }
+
             clearTimeout(timeout)
             clearInterval(interval)
             return
@@ -68,7 +76,7 @@ function initialize (wsApp, internalApp) {
               }
             }
 
-            if (process.env.VERBOSE) {
+            if (process.env.VERBOSE === 'true') {
               console.log(chalk.cyan(`Puppy WS: Emitting message `) + chalk.bold.magenta(JSON.stringify(message)))
             }
 
@@ -89,7 +97,9 @@ function initialize (wsApp, internalApp) {
     })
 
     ws.on('message', message => {
-      console.log(socket('Puppy WS: Received message: %s'), message)
+      if (process.env.VERBOSE === 'true') {
+        console.log(socket('Puppy WS: Received message: %s'), message)
+      }
     })
   })
 
