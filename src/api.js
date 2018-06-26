@@ -56,8 +56,8 @@ function initialize (apiApp, internalApp) {
       return
     }
 
-    const data = apiOnDemandResponses[req.url] && apiOnDemandResponses[req.url][req.method || 'DEFAULT']
-      || apiDefaultResponses[req.url] && apiDefaultResponses[req.url][req.method || 'DEFAULT']
+    const data = apiOnDemandResponses[req.url] && (apiOnDemandResponses[req.url][req.method] || apiOnDemandResponses[req.url]['DEFAULT'])
+      || apiDefaultResponses[req.url] && (apiDefaultResponses[req.url][req.method] || apiDefaultResponses[req.url]['DEFAULT'])
 
     if (!data) {
       const message = `Puppy API: method: ${req.method} url: ${req.url} is not supported, please update your API definition`
@@ -69,19 +69,17 @@ function initialize (apiApp, internalApp) {
     }
 
     if (apiOnDemandResponses[req.url]) {
-      delete apiOnDemandResponses[req.url][req.method || 'DEFAULT']
+      delete apiOnDemandResponses[req.url][req.method]
+      delete apiOnDemandResponses[req.url]['DEFAULT']
     }
 
-    const body = data.body || 'EMPTY BODY'
+    const body = JSON.stringify(data.body) || 'EMPTY BODY'
     const status = data.status || 200
     const headers = data.headers || {}
 
     Object.keys(headers).forEach(key => res.setHeader(key, headers[key]))
 
-    res.status(status)
-
     res.end(body)
-
   })
 }
 
