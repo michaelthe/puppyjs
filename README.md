@@ -63,9 +63,19 @@ module.exports = {
 
 ## The puppy web socket file `puppy.ws.js`
 
+The `puppy.ws.js` file is used to simulate the websocket portion of a back-end system. It can simulate and emit messages with delay and/or interval or once-off dispatching.
+
+The default filename can be changed by providing a flag.
+
+```javascript
+puppy serve --api mocked.api.js
+
+puppy test --api mocked.api.js
+````
+
 API
 
-   * Events: Array(Object)
+   * Events: Array(Objects)
    
    * Event: 
       * label: String **optional**
@@ -100,6 +110,54 @@ module.exports = [
 
 ## The puppy api file `puppy.api.js`
 
+The `puppy.api.js` file is used to define the default mocked responses when a client makes a request to an endpoint. It can be used to quickly mock the back-end part of an application as well as used in testing to provide default responses instead of hitting an actual API in production.
+
+The default filename can be changed by providing a flag.
+
 ```javascript
-// TODO: add sample 
+puppy serve --api mocked.api.js
+
+puppy test --api mocked.api.js
+```
+####Example API definition file
+
+```javascript
+module.exports = {
+  '/api/users': {
+    'GET': {
+      headers: {
+        'Authorization': 'Bearer some-token'
+      },
+      status: 200,
+      body: 'hello its a GET'
+    },
+    'POST': {
+      headers: {
+        'Authorization': 'Bearer some-token'
+      },
+      status: 200,
+      body: 'hello its a POST'
+    },
+    'DEFAULT': {
+      headers: {
+        'Authorization': 'Bearer some-token'
+      },
+      status: 200,
+      body: 'hello its a default'
+    }
+  }
+}
+```
+
+**Note** the `DEFAULT` key can be used to define a fallback response when the client makes a request with a method other than the specified ones. 
+In the example below if the client makes a `PATCH` request, the `DEFAULT` response will be given back to the client.
+
+Default values if not given for any default response provided in the API definition file:
+
+```javascript
+{
+  status: 200,
+  body: 'EMPTY-BODY',
+  headers: {}
+}
 ```
