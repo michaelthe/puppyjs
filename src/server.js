@@ -18,6 +18,8 @@ let internalApp = express()
 internalApp.use(cors())
 internalApp.use(bodyParser.json())
 
+internalApp.get('/status', (req, res) => res.end('ok'))
+
 if (process.env.API_PORT !== process.env.PORT) {
   apiApp = express()
 }

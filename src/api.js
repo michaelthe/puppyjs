@@ -11,23 +11,29 @@ const error = chalk.keyword('red')
 const warning = chalk.keyword('orange')
 
 function initialize (apiApp, internalApp) {
-  const apiOnDemandResponses = {}
+  let apiDefaultResponses = {}
+  let apiOnDemandResponses = {}
 
   let apiFile = path.resolve(process.cwd(), process.env.API)
-  let apiDefaultResponses = {}
 
   if (fs.existsSync(apiFile)) {
     apiDefaultResponses = require(apiFile)
   }
 
-  chokidar.watch(apiFile, {persistent: true, usePolling: true})
-    .on('change', (path, event) => {
+  chokidar
+    .watch(apiFile, {usePolling: true})
+    .on('change', path => {
       delete require.cache[require.resolve(path)]
       apiDefaultResponses = require(path)
     })
 
   apiApp.use(cors())
   apiApp.use(bodyParser.json())
+
+  internalApp.post('/flush', (req, res) => {
+    apiOnDemandResponses = {}
+    res.send('ok')
+  })
 
   internalApp.post('/register', (req, res) => {
     const {data, headers, status, path} = req.body
@@ -56,9 +62,12 @@ function initialize (apiApp, internalApp) {
       || undefined
 
     if (!data) {
-      console.warn(error(`Puppy API: HTTP VERB (${method}) not supported for this route, please update your API`))
+      const message = `Puppy API: method: ${method} url: ${req.url} is not supported, please update your API definition`
+
+      console.warn(error(message))
+
       res.status(404)
-      res.end(`Puppy API: HTTP VERB (${method}) not supported for this route, please update your API`)
+      res.end(message)
       return
     }
 

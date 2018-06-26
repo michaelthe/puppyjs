@@ -2,6 +2,7 @@
 .env
 .next
 .idea
+.puppy
 .eslintcache
 .node_repl_history
 

@@ -2,9 +2,10 @@ const version = require('../package').version
 
 module.exports = () => `
 version ${version}
-puppy [argument] [options]
+puppy argument [options] [test-file]
    arguments
-   server:              start mock servers
+   t or test:           start servers and run the tests
+   s or serve:          start mock servers only
    options
    -h  --help:          show this help
    -v:                  verbose
