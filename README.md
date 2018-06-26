@@ -20,7 +20,7 @@ run your e2e tests against the same mock API and socket events you used for deve
 npm install puppyjs --save-dev
 ```
 
-### Install globally
+## Install globally
 ```bash
 npm install puppyjs --global
 ```
@@ -42,6 +42,23 @@ puppy test
 
 ## The puppy config file `puppy.config.js`
 
+You can fine-tune puppy by creating a puppy.config.js file in the top level of the current directory you want to use PuppyJS.
+
+* **ws** 
+
+    is the flag for setting a custom file for the web socket definition file, puppy needs it to be at the top level of the current directory next to package.json 
+
+* **api**
+
+    is the flag for setting a custom file for the HTTP API definition file. **Note** this file needs to be at the top level of the current working directory next to the package.json file. Default file that Puppy will search for use **puppy.api.js**.
+    
+* **verbose**
+
+    You can set this option to `true` if you want to have more specific logs spit out by PuppyJS. Default value is **false**.
+
+
+In the config file snapshot below, what you see there are the `default` values.
+
 ```javascript
 const path = require('path')
 
@@ -55,6 +72,7 @@ module.exports = {
 
   'verbose': false,
   'headless': false,
+  'inspect': false
 
   'ws-url': '/ws',
   'index-file': 'index.html',
@@ -62,6 +80,10 @@ module.exports = {
 }
 
 ```
+
+### Understanding what makes Puppy tick
+
+
 
 ## The puppy api file `puppy.api.js`
 
