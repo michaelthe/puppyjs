@@ -36,52 +36,52 @@ function initialize (apiApp, internalApp) {
   })
 
   internalApp.post('/register', (req, res) => {
-    const {data, headers, status, path} = req.body
+    const {data, headers, status, path, method} = req.body
 
-    console.debug(log(`Puppy register URL %s`), path)
+    console.debug(log(`Puppy register METHOD %s URL %s`), method || 'DEFAULT', path)
 
-    apiOnDemandResponses[path] = {
+    apiOnDemandResponses[path] = apiOnDemandResponses[path] || {}
+
+    apiOnDemandResponses[path][method || 'DEFAULT'] = {
       body: data || 'ok',
-      headers: headers || [],
-      status: status || 200
+      status: status || 200,
+      headers: headers || []
     }
 
     res.send('ok')
   })
 
-  apiApp.all('*', (req, res, next) => {
+  apiApp.all('*', (req, res) => {
     if (req.url === '') {
       return
     }
 
-    const method = req.method
-
-    const data = apiOnDemandResponses[req.url] && apiOnDemandResponses[req.url][req.method]
-      || apiDefaultResponses[req.url] && apiDefaultResponses[req.url][req.method]
-      || apiDefaultResponses[req.url] && apiDefaultResponses[req.url]['DEFAULT']
-      || undefined
+    const data = apiOnDemandResponses[req.url] && apiOnDemandResponses[req.url][req.method || 'DEFAULT']
+      || apiDefaultResponses[req.url] && apiDefaultResponses[req.url][req.method || 'DEFAULT']
 
     if (!data) {
-      const message = `Puppy API: method: ${method} url: ${req.url} is not supported, please update your API definition`
-
-      console.warn(error(message))
+      const message = `Puppy API: method: ${req.method} url: ${req.url} is not supported, please update your API definition`
 
       res.status(404)
       res.end(message)
-      return
+
+      return console.warn(error(message))
+    }
+
+    if (apiOnDemandResponses[req.url]) {
+      delete apiOnDemandResponses[req.url][req.method || 'DEFAULT']
     }
 
     const body = data.body || 'EMPTY BODY'
     const status = data.status || 200
-    const headers = data.headers || []
+    const headers = data.headers || {}
 
-    headers.forEach(header => res.setHeader(header.key, header.value))
+    Object.keys(headers).forEach(key => res.setHeader(key, headers[key]))
 
     res.status(status)
+
     res.end(body)
 
-    delete apiOnDemandResponses[req.url]
-    next()
   })
 }
 

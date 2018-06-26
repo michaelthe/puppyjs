@@ -1,82 +1,16 @@
 const URL = require('url').URL
 const http = require('http')
 
-async function emit (payload) {
-  return new Promise((resolve, reject) => {
-    try {
-      var dataString = JSON.stringify(payload)
-    } catch (error) {
-      reject(error)
-    }
-
-    let requestData = {
-      host: '127.0.0.1',
-      port: process.env.INTERNAL_PORT,
-      path: '/emit',
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Content-Length': Buffer.byteLength(dataString)
-      }
-    }
-
-    let response = ''
-    let post = http
-      .request(requestData, resStream => {
-        resStream.setEncoding('utf8')
-        resStream.on('error', error => reject(error))
-
-        resStream.on('data', chunk => {
-          response += chunk
-        })
-
-        resStream.on('end', () => resolve(response))
-      })
-
-    post.on('error', error => reject(error))
-
-    post.write(dataString)
-    post.end()
-  })
+async function emit (message) {
+  return await _post('/emit', message)
 }
 
-async function register (data) {
-  return new Promise((resolve, reject) => {
-    try {
-      var dataString = JSON.stringify(data)
-    } catch (error) {
-      reject(error)
-    }
+async function flush () {
+  return await _post('/flush', '')
+}
 
-    let options = {
-      host: '127.0.0.1',
-      port: process.env.INTERNAL_PORT,
-      path: '/register',
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Content-Length': Buffer.byteLength(dataString)
-      }
-    }
-
-    let response = ''
-    let post = http
-      .request(options, resStream => {
-        resStream.setEncoding('utf8')
-        resStream.on('error', error => reject(error))
-
-        resStream.on('data', chunk => {
-          response += chunk
-        })
-
-        resStream.on('end', () => resolve(response))
-      })
-
-    post.on('error', error => reject(error))
-
-    post.write(dataString)
-    post.end()
-  })
+async function register (request) {
+  return await _post('/register', request)
 }
 
 async function newPage (url = '') {
@@ -99,4 +33,41 @@ async function newPage (url = '') {
   return page
 }
 
-module.exports = {emit, register, newPage}
+async function _post (path, data) {
+  return new Promise((resolve, reject) => {
+    let dataString
+    try {
+      dataString = JSON.stringify(data)
+    } catch (error) {
+      reject(error)
+    }
+
+    let options = {
+      host: '127.0.0.1',
+      port: process.env.INTERNAL_PORT,
+      path: path,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(dataString)
+      }
+    }
+
+    let post = http.request(options, resStream => {
+      let response = ''
+
+      resStream.setEncoding('utf8')
+      resStream.on('error', error => reject(error))
+      resStream.on('data', chunk => response += chunk)
+      resStream.on('end', () => resolve(response))
+    })
+
+    post.on('error', error => reject(error))
+
+    post.write(dataString)
+
+    post.end()
+  })
+}
+
+module.exports = {emit, flush, register, newPage}
