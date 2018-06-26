@@ -3,9 +3,8 @@ const users = [
   {name: 'Kostis', email: 'yolo@gmail.com', age: 35}
 ]
 
-const Events = [
+module.exports = [
   {
-    label: 'notifications',
     delay: 1000,
     interval: 1000,
     messages: [
@@ -15,10 +14,9 @@ const Events = [
   },
   {
     messages: async () => {
-      const items = [12,3,52,23]
+      const items = [12,3,52,23, 55]
       return items[Math.floor(Math.random()*items.length)]
-    }
+    },
+    interval: 3000
   }
 ]
-
-module.exports = Events

@@ -63,8 +63,39 @@ module.exports = {
 
 ## The puppy web socket file `puppy.ws.js`
 
+API
+
+   * Events: Array(Object)
+   
+   * Event: 
+      * label: String **optional**
+      * delay: Number **optional**
+      * interval: Number **optional**
+      * messages: \<Object | function>[] | Object | Function
+
 ```javascript
-// TODO: add sample 
+const users = [
+  {name: 'Andrew', email: '9pitop@gmail.com', age: 44},
+  {name: 'Kostis', email: 'yolo@gmail.com', age: 35}
+]
+
+module.exports = [
+  {
+    delay: 1000,
+    interval: 1000,
+    messages: [
+      users,
+      {seen: false, createdAt: Date.now(), text: 'I am a notification'}
+    ]
+  },
+  {
+    messages: async () => {
+      const items = [12,3,52,23]
+      return items[Math.floor(Math.random()*items.length)]
+    },
+    interval: 3000
+  }
+]
 ```
 
 ## The puppy api file `puppy.api.js`

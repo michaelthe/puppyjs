@@ -7,6 +7,7 @@ const chokidar = require('chokidar')
 const socket = chalk.bold.greenBright
 
 function initialize (wsApp, internalApp) {
+
   const expressUms = expressuws(wsApp)// eslint-disable-line
 
   const wss = expressUms.getWss()
@@ -15,42 +16,80 @@ function initialize (wsApp, internalApp) {
   let wsFile = path.resolve(process.cwd(), process.env.WS)
   let wsDefaultResponses = {}
 
+  let timeouts = []
+  let intervals = []
+
   if (fs.existsSync(wsFile)) {
     wsDefaultResponses = require(wsFile)
   }
 
-  chokidar.watch(wsFile, {usePolling: true})
-    .on('change', (path, event) => {
+  chokidar
+    .watch(wsFile, {usePolling: true})
+    .on('change', path => {
+      console.log(chalk.bold.cyan('Puppy WS: Changes detected, reloading file. Refresh browser to view changes'))
       delete require.cache[require.resolve(path)]
       wsDefaultResponses = require(path)
+
+      timeouts.forEach(timeout => clearTimeout(timeout))
+      intervals.forEach(interval => clearInterval(interval))
+
+      timeouts = []
+      intervals = []
     })
 
   wsApp.ws(process.env.WS_URL, ws => {
-    console.debug(socket('Puppy ws client connected'))
+    console.debug(socket('Puppy WS: Client connected'))
 
     wsDefaultResponses.forEach(event => {
-      let intervalRef
-      setTimeout(() => {
-        intervalRef = setInterval(() => {
-          if (typeof event.messages === 'function') {
-            ws.send(JSON.stringify(event.messages.call(event.messages)))
+      const timeout = setTimeout(async () => {
+        const _emitMessage = async messages => {
+
+          if (ws.readyState !== 1) {
+            if (process.env.VERBOSE) { console.log(chalk.keyword('orange')('Puppy WS: Clearing previous timeout and interval for event due to socket disconnection')) }
+            clearTimeout(timeout)
+            clearInterval(interval)
+            return
           }
 
-          if (Array.isArray(event.messages)) {
-            event.messages.forEach(message => {
-              ws.send(JSON.stringify(message))
-            })
+          if (!Array.isArray(messages)) {
+            messages = [messages]
           }
-        }, event.interval)
+
+          for (let message of messages) {
+            if (typeof message === 'function') {
+              try {
+                message = await message()
+              } catch (err) {
+                console.log(chalk.bold.red('Puppy WS: Something went wrong while executing the function'))
+                console.error(err)
+                clearTimeout(timeout)
+                clearInterval(interval)
+                return
+              }
+            }
+
+            if (process.env.VERBOSE) {
+              console.log(chalk.cyan(`Puppy WS: Emitting message `) + chalk.bold.magenta(JSON.stringify(message)))
+            }
+
+            ws.send(JSON.stringify(message))
+          }
+        }
+
+        if (!event.interval) {
+          return _emitMessage(event.messages)
+        }
+
+        const interval = setInterval(() => _emitMessage(event.messages), event.interval)
+
+        intervals.push(interval)
       }, event.delay || 0)
 
-      if (!event.interval) {
-        intervalRef.clear()
-      }
+      timeouts.push(timeout)
     })
 
     ws.on('message', message => {
-      console.log(socket('Puppy ws received message: %s'), message)
+      console.log(socket('Puppy WS: Received message: %s'), message)
     })
   })
 
@@ -59,7 +98,7 @@ function initialize (wsApp, internalApp) {
 
     wss.clients.forEach(client => client.send(JSON.stringify(message)))
 
-    setTimeout(() => res.send('ok'), 50)
+    setTimeout(() => res.send('OK'), 50)
   })
 }
 
