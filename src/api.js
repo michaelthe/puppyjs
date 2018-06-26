@@ -38,7 +38,9 @@ function initialize (apiApp, internalApp) {
   internalApp.post('/register', (req, res) => {
     const {data, headers, status, path, method} = req.body
 
-    console.debug(log(`Puppy register METHOD %s URL %s`), method || 'DEFAULT', path)
+    if (process.env.VERBOSE === 'true') {
+      console.debug(log(`Puppy register METHOD %s URL %s`), method || 'DEFAULT', path)
+    }
 
     apiOnDemandResponses[path] = apiOnDemandResponses[path] || {}
 
@@ -64,8 +66,14 @@ function initialize (apiApp, internalApp) {
 
       res.status(404)
       res.end(message)
+      if (process.env.VERBOSE === 'true') {
+        console.warn(error(message))
+      }
+      return
+    }
 
-      return console.warn(error(message))
+    if (process.env.VERBOSE === 'true') {
+      console.log(`Puppy API: method: ${req.method} url: ${req.url}`)
     }
 
     if (apiOnDemandResponses[req.url]) {
@@ -78,6 +86,8 @@ function initialize (apiApp, internalApp) {
     const headers = data.headers || {}
 
     Object.keys(headers).forEach(key => res.setHeader(key, headers[key]))
+
+    res.status(status)
 
     res.end(body)
   })
