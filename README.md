@@ -1,17 +1,19 @@
-# puppyjs 
+# Puppy.JS 
 
 ![npm](https://img.shields.io/npm/l/puppyjs.svg?style=flat-square)
 ![npm](https://img.shields.io/npm/v/puppyjs.svg?style=flat-square)
 ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/michaelthe/puppyjs/master.svg?style=flat-square)
 ![CircleCI branch](https://img.shields.io/circleci/project/github/michaelthe/puppyjs/master.svg?style=flat-square)
 
-## puppeteer + jest + awesome-code = puppyjs
+## Puppeteer + Jest + awesome-code = Puppy.JS
 
-Puppyjs is a framework agnostic e2e testing and mocking tool for front end developers.
-Puppy depends on jest for tests and puppeteer for the testing environment, if you know jest and puppeteer then you 80% know puppy.
-Puppy also lets you mock http APIs and web socket events so you both; 
-develop your application until the backend is ready; 
-and, run your e2e test against the same mock API and socket events you used for development.  
+Puppy.JS is a framework agnostic E2E (end-to-end) testing and mocking tool for front end developers.
+Puppy depends on [Jest](http://jestjs.io/) for tests and [Puppeteer](https://github.com/GoogleChrome/puppeteer) 
+for the testing environment so if you know these tools then you already know 80% of PuppyJS.
+
+Puppy also lets you mock HTTP APIs and web socket events so you can 
+develop your application until the backend is ready as well as
+run your e2e tests against the same mock API and socket events you used for development.  
 
 ## Install  
 ```bash
@@ -61,56 +63,11 @@ module.exports = {
 
 ```
 
-## The puppy web socket file `puppy.ws.js`
-
-The `puppy.ws.js` file is used to simulate the websocket portion of a back-end system. It can simulate and emit messages with delay and/or interval or once-off dispatching.
-
-The default filename can be changed by providing a flag.
-
-```javascript
-puppy serve --api mocked.api.js
-
-puppy test --api mocked.api.js
-````
-
-API
-
-   * Events: Array(Objects)
-   
-   * Event: 
-      * label: String **optional**
-      * delay: Number **optional**
-      * interval: Number **optional**
-      * messages: \<Object | function>[] | Object | Function
-
-```javascript
-const users = [
-  {name: 'Andrew', email: '9pitop@gmail.com', age: 44},
-  {name: 'Kostis', email: 'yolo@gmail.com', age: 35}
-]
-
-module.exports = [
-  {
-    delay: 1000,
-    interval: 1000,
-    messages: [
-      users,
-      {seen: false, createdAt: Date.now(), text: 'I am a notification'}
-    ]
-  },
-  {
-    messages: async () => {
-      const items = [12,3,52,23]
-      return items[Math.floor(Math.random()*items.length)]
-    },
-    interval: 3000
-  }
-]
-```
-
 ## The puppy api file `puppy.api.js`
 
-The `puppy.api.js` file is used to define the default mocked responses when a client makes a request to an endpoint. It can be used to quickly mock the back-end part of an application as well as used in testing to provide default responses instead of hitting an actual API in production.
+The `puppy.api.js` file is used to define the default mocked responses when a client makes a request to an endpoint.
+ It can be used to quickly mock the back-end part of an application as well as used in testing to provide 
+ default responses instead of hitting an actual API.
 
 The default filename can be changed by providing a flag.
 
@@ -160,4 +117,55 @@ Default values if not given for any default response provided in the API definit
   body: 'EMPTY-BODY',
   headers: {}
 }
+```
+
+#### Defining responses dynamically
+
+Sometimes you might want to register a dynamic response for a request so that your app can receive a specific response once.
+
+## The puppy web socket file `puppy.ws.js`
+
+The `puppy.ws.js` file is used to simulate the websocket portion of a back-end system. It can simulate and emit messages with delay and/or interval or once-off dispatching.
+
+The default filename can be changed by providing a flag.
+
+```javascript
+puppy serve --ws mocked.api.js
+
+puppy test --ws mocked.api.js
+````
+
+API
+
+   * Events: Array(Objects)
+   
+   * Event: 
+      * label: String **optional**
+      * delay: Number **optional**
+      * interval: Number **optional**
+      * messages: \<Object | function>[] | Object | Function
+
+```javascript
+const users = [
+  {name: 'Andrew', email: '9pitop@gmail.com', age: 44},
+  {name: 'Kostis', email: 'yolo@gmail.com', age: 35}
+]
+
+module.exports = [
+  {
+    delay: 1000,
+    interval: 1000,
+    messages: [
+      users,
+      {seen: false, createdAt: Date.now(), text: 'I am a notification'}
+    ]
+  },
+  {
+    messages: async () => {
+      const items = [12,3,52,23]
+      return items[Math.floor(Math.random()*items.length)]
+    },
+    interval: 3000
+  }
+]
 ```
