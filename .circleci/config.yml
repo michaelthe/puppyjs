@@ -28,14 +28,20 @@ jobs:
     working_directory: ~/repo
     docker:
       - image: michaelth/node-chrome
-    requires:
-      - test
     branches:
       only:
         - master
     steps:
       - checkout
-
       - run:
           name: Publish to npm
           command: scripts/publish.sh
+
+workflows:
+  version: 2
+  test-publish:
+    jobs:
+      - test
+      - publish:
+          requires:
+            - test
