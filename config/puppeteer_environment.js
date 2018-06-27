@@ -24,8 +24,9 @@ class PuppeteerEnvironment extends NodeEnvironment {
     this.global.puppy = {
       browser: browser,
       emit: helpers.emit,
+      flush: helpers.flush,
       register: helpers.register,
-      newPage: helpers.newPage.bind(browser),
+      newPage: helpers.newPage.bind(browser)
     }
   }
 }

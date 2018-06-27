@@ -40,7 +40,46 @@ puppy serve
 puppy test
 ```
 
-## The puppy config file `puppy.config.js`
+### Understanding what makes Puppy tick
+
+Puppy creates four servers with three of the four on the **same** port. It supports both HTTP and Web sockets for mocking as you probably deduced by now and it supports serving static files as well. 
+However, to avoid conflicts with puppy internal routes, there is also an internal server which puppy will proxy requests made by the tool. 
+For example PuppyJS handles a `/register` route  for dynamically registering HTTP responses. This means that if your app
+was using a `/register` for registering users, it wouldn't work. Instead of namespacing the Puppy's specific routes, 
+we chose to have an internal server handle that which automatically choses a free port in the 65000+ range and saves it in a `.puppy` folder in the current directory.
+
+`.puppy` folder is used for directory specific settings by Puppy. For now it only saves the current internal server port.
+
+### How to use 
+
+There are two ways that you can use PuppyJS. For development purposes and for end-to-end testing using Jest and Puppeteer.
+
+For `development` you can use the following command:
+
+`puppy serve`
+
+For `testing` you can use the following command:
+
+`puppy test`
+
+When puppy is used in development mode, it automatically watches for changes made to `puppy.ws.js` and `puppy.api.js` files and reloads them. 
+
+**Note** Changes made to `puppy.ws.js` need a page reload in the browser to take effect while changes to `puppy.api.js` are instant.
+
+When using `puppy serve` you can observe the current values used for the ports, static dir etc as seen below
+
+```javascript
+Puppy is listening on port 65000!
+Puppy static is listening on port 8080!
+Puppy static dir is: <current project DIR>/dist!
+Puppy static index file: index.html!
+Puppy static api is listening on port 8080!
+Puppy ws is listening on port 8080!
+Puppy ws URL is set to /ws!
+
+```
+
+### The puppy config file `puppy.config.js`
 
 You can fine-tune puppy by creating a puppy.config.js file in the top level of the current directory you want to use PuppyJS.
 
@@ -115,42 +154,165 @@ module.exports = {
 
 ```
 
-### Understanding what makes Puppy tick
+### Testing
 
-Puppy creates four servers. It supports both HTTP and Web sockets for mocking as you probably deduced by now and it supports serving static files as well. 
-However, to avoid conflicts with puppy internal routes, there is also an internal server which puppy will proxy requests made by the tool. 
-For example PuppyJS handles a `/register` route  for dynamically registering HTTP responses. This means that if your app
-was using a `/register` for registering users, it wouldn't work. Instead of namespacing the Puppy's specific routes, we chose to have an internal server handle that.
+PuppyJS was built to work with zero-config (see default config values above), so for testing you only need to run `puppy test` command. 
+Puppy will search for files ending in `.e2e.js` and run the tests so bear that in mind if you save your test files in `.spec.js`. 
 
-There are two ways that you can use PuppyJS. For development purposes and for end-to-end testing using Jest and Puppeteer.
+#### Puppy Global Object
 
-For `development` you can use the following command:
-
-`puppy serve`
-
-For `testing` you can use the following command:
-
-`puppy test`
-
-When puppy is used in development mode, it automatically watches for changes made to `puppy.ws.js` and `puppy.api.js` files and reloads them. 
-
-**Note** Changes made to `puppy.ws.js` need a page reload in the browser to take effect while changes to `puppy.api.js` are instant.
-
-When using `puppy serve` you can observe the current values used for the ports, static dir etc as seen below
+Puppy by default gives you access to the **puppy** global object _which also wraps puppeteer_ . In the example below you can observe the minimum setup for launching a test
 
 ```javascript
-Puppy is listening on port 65000!
-Puppy static is listening on port 8080!
-Puppy static dir is: /home/petros/Desktop/Projects/puppyjs/dist!
-Puppy static index file: index.html!
-Puppy static api is listening on port 8080!
-Puppy ws is listening on port 8080!
-Puppy ws URL is set to /ws!
+describe('test', () => {
+  let page
+  
+  it('should work with empty url', async () => {
+      page = await puppy.newPage()
+      await page.waitFor('.test')
+  })
+}
+``` 
+
+As you can observe the only line of code needed to get a page reference is `page = await puppy.newPage()`
+
+* newPage
+
+    * when no arguments are passed corresponds to `http://localhost:${PORT}` and assumes an `index.html` file in current working directory to be used as an entry point.
+    * the only argument supported at the moment is the url or path. 
+    
+    For example if your `index.html` file is under a `src` folder then you would use `page = await puppy.newPage('/src/[filename].html')`. **Note** The first `/` is optional.
+    
+    You can also provide a full url e.g `page = await puppy.newPage('http://www.google.com')`. **Note** that `http(s)` is required in front of the url.
+    
+##### Access to the BROWSER object
+
+You can get to the BROWSER object as exposed by Puppeteer using `puppy.browser`.
+    
+##### Registering dynamic responses for use in tests
+
+The `puppy` object exposes several helper functions including `puppy.register` which you can use to register a dynamic response. This is useful for when you want to test that your front-end handles a 404 error for example gracefully and shows a relevant message.
+
+Example:
+
+```javascript
+describe('test', () => {
+  let page
+  
+  beforeEach(async () => {
+    page = await puppy.newPage()
+  })
+  
+  it('should work with empty url', async () => {
+      await puppy.register({
+         path: '/api/users',
+         status?: 404,
+         data?: 'No users found',
+         headers?: {},
+         method: 'POST'
+      })
+      await page.click('.btn.getUsers')
+      
+      await page.waitFor('.error-container')
+      
+      const error = await page.evaluate(() => document.getElementById('error-message').innerText)
+      
+      expect(error).toEqual('No users found')
+  })
+}
+```
+
+**Note** all parameters with `?` are optional above. Defaults are the following:
 
 ```
-## Testing
+    data: 'ok',
+    status: 200,
+    headers: {}
+```
 
-PuppyJS was built to work with zero-config
+##### Registering dynamic web socket messages
+
+As with dynamic HTTP responses you can `emit` dynamic web socket messages using `puppy.emit`
+
+Example:
+
+```javascript
+
+describe('test', () => {
+  let page
+  
+  beforeEach(async () => {
+    page = await puppy.newPage()
+  })
+  
+  it('should work with empty url', async () => {
+      await puppy.emit({
+         delay?: 0,
+         interval?: 1000,
+         messages: [
+           {seen: false, createdAt: Date.now(), text: 'I am a notification'}
+         ]
+      })
+      
+      await page.click('.notifications-container')
+      
+      await page.waitFor('.notifications-container')
+      
+      const notification = await page.evaluate(() => document.querySelector('.notification').innerText)
+      
+      expect(error).toEqual('I am a notification')
+  })
+}
+```
+
+**Note** all parameters with `?` are optional above. Defaults are the following:
+
+```
+    delay: 0,
+    interval: unset
+```
+
+##### Flushing all dynamic HTTP responses
+
+If you want to avoid any mishaps with dynamic HTTP responses you can use `puppy.flush()` to remove all previously set dynamic HTTP responses.
+
+
+Example: 
+
+```javascript
+
+describe('test', () => {
+  let page
+  
+  beforeEach(async () => {
+    page = await puppy.newPage()
+    await puppy.flush() // flush all dynamic HTTP responses
+  })
+  
+  it('should work with empty url', async () => {
+      await puppy.emit({
+         delay?: 0,
+         interval?: 1000,
+         messages: [
+           {seen: false, createdAt: Date.now(), text: 'I am a notification'}
+         ]
+      })
+      
+      await page.click('.notifications-container')
+      
+      await page.waitFor('.notifications-container')
+      
+      const notification = await page.evaluate(() => document.querySelector('.notification').innerText)
+      
+      expect(error).toEqual('I am a notification')
+  })
+}
+```
+
+#### Run specific tests
+
+If you want to run only specific tests for example you want to run the `users.e2e.js` test file you can use `puppy test users` and Puppy will run all files containing the word `users` and end in `.e2e.js`
+
 
 ## The puppy api file `puppy.api.js`
 

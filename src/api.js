@@ -45,9 +45,9 @@ function initialize (apiApp, internalApp) {
     apiOnDemandResponses[path] = apiOnDemandResponses[path] || {}
 
     apiOnDemandResponses[path][method || 'DEFAULT'] = {
-      body: data || 'ok',
+      body: data || 'OK',
       status: status || 200,
-      headers: headers || []
+      headers: headers || {}
     }
 
     res.send('ok')
