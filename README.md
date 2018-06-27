@@ -44,17 +44,50 @@ puppy test
 
 You can fine-tune puppy by creating a puppy.config.js file in the top level of the current directory you want to use PuppyJS.
 
+* **port**
+    
+    This sets the port for all servers (Websocket, API, Static files)
+
 * **ws** 
 
     is the flag for setting a custom file for the web socket definition file, puppy needs it to be at the top level of the current directory next to package.json 
+    
+* **ws-port** 
+
+    is the flag for setting a custom port for connecting using web socket.  Default port is **8080**
+    
+* **ws-url** 
+
+    is the flag for setting a custom url for connecting using web socket. Default url is **/ws** 
 
 * **api**
 
     is the flag for setting a custom file for the HTTP API definition file. **Note** this file needs to be at the top level of the current working directory next to the package.json file. Default file that Puppy will search for use **puppy.api.js**.
     
+* **api-port** 
+    
+    is the flag for setting a custom port for connecting using HTTP.  Default port is **8080**
+    
 * **verbose**
 
-    You can set this option to `true` if you want to have more specific logs spit out by PuppyJS. Default value is **false**.
+    You can set this option to `true` if you want to have more specific logs spat out by PuppyJS. Default value is **false**.
+    
+* **headless**
+
+    You can set this option to `true` if you want avoid showing a browser window when running end-to-end tests. Default **false**
+    
+* **inspect**
+
+    You can set this option to `true` if you want to be able to use a debugger in puppy's source code. Default **false**
+    
+* **static_dir**
+    
+   Define your own static dir in the current working directory for serving static assets. Default **dist**
+   
+* **index-file**
+    
+   Define your own index.html as an entrypoint in the current working directory. Default **index.html**
+    
 
 
 In the config file snapshot below, what you see there are the `default` values.
@@ -63,18 +96,19 @@ In the config file snapshot below, what you see there are the `default` values.
 const path = require('path')
 
 module.exports = {
-  'ws': path.resolve(process.cwd(), 'puppy.ws.js'),
-  'api': path.resolve(process.cwd(), 'puppy.api.js'),
-
   'port': 8080,
-  'ws-port': 8080,
+  
+  'api': path.resolve(process.cwd(), 'puppy.api.js'),
   'api-port': 8080,
+
+  'ws': path.resolve(process.cwd(), 'puppy.ws.js'),
+  'ws-port': 8080,
+  'ws-url': '/ws',
 
   'verbose': false,
   'headless': false,
   'inspect': false
 
-  'ws-url': '/ws',
   'index-file': 'index.html',
   'static-dir': path.resolve(process.cwd(), 'dist'),
 }
@@ -83,7 +117,40 @@ module.exports = {
 
 ### Understanding what makes Puppy tick
 
+Puppy creates four servers. It supports both HTTP and Web sockets for mocking as you probably deduced by now and it supports serving static files as well. 
+However, to avoid conflicts with puppy internal routes, there is also an internal server which puppy will proxy requests made by the tool. 
+For example PuppyJS handles a `/register` route  for dynamically registering HTTP responses. This means that if your app
+was using a `/register` for registering users, it wouldn't work. Instead of namespacing the Puppy's specific routes, we chose to have an internal server handle that.
 
+There are two ways that you can use PuppyJS. For development purposes and for end-to-end testing using Jest and Puppeteer.
+
+For `development` you can use the following command:
+
+`puppy serve`
+
+For `testing` you can use the following command:
+
+`puppy test`
+
+When puppy is used in development mode, it automatically watches for changes made to `puppy.ws.js` and `puppy.api.js` files and reloads them. 
+
+**Note** Changes made to `puppy.ws.js` need a page reload in the browser to take effect while changes to `puppy.api.js` are instant.
+
+When using `puppy serve` you can observe the current values used for the ports, static dir etc as seen below
+
+```javascript
+Puppy is listening on port 65000!
+Puppy static is listening on port 8080!
+Puppy static dir is: /home/petros/Desktop/Projects/puppyjs/dist!
+Puppy static index file: index.html!
+Puppy static api is listening on port 8080!
+Puppy ws is listening on port 8080!
+Puppy ws URL is set to /ws!
+
+```
+## Testing
+
+PuppyJS was built to work with zero-config
 
 ## The puppy api file `puppy.api.js`
 
