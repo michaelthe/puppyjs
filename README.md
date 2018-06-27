@@ -327,7 +327,8 @@ puppy serve --api mocked.api.js
 
 puppy test --api mocked.api.js
 ```
-####Example API definition file
+
+#### Example API definition file
 
 ```javascript
 module.exports = {
