@@ -1,4 +1,4 @@
-# Puppy.JS 
+# PuppyJS 
 
 ![npm](https://img.shields.io/npm/l/puppyjs.svg?style=flat-square)
 ![npm](https://img.shields.io/npm/v/puppyjs.svg?style=flat-square)
@@ -7,13 +7,13 @@
 
 ## Puppeteer + Jest + awesome-code = Puppy.JS
 
-Puppy.JS is a framework agnostic E2E (end-to-end) testing and mocking tool for front end developers.
+PuppyJS is a framework agnostic E2E (end-to-end) testing and mocking tool for front end developers.
 Puppy depends on [Jest](http://jestjs.io/) for tests and [Puppeteer](https://github.com/GoogleChrome/puppeteer) 
-for the testing environment so if you know these tools then you already know 80% of PuppyJS.
+for the testing environment so if you know these tools then you already know 80% of Puppy.
 
 Puppy also lets you mock HTTP APIs and web socket events so you can 
 develop your application until the backend is ready as well as
-run your e2e tests against the same mock API and socket events you used for development.  
+run your E2E tests against the same mock API and socket events you used for development.  
 
 ## Install  
 ```bash
@@ -40,19 +40,114 @@ puppy serve
 puppy test
 ```
 
+### Sample directory structure
+
+Below you can find a sample directory structure. The important thing to notice are the `puppy.api.js`, `puppy.ws.js` and `puppy.config.js` and that they are at the root level of the directory.
+
+```javascript
+.
+|
+├── puppy.api.js
+├── puppy.ws.js
+├── puppy.config.js <optional>
+|
+├── package.json
+|
+├── public
+|   ├── background.jpg
+|   └── fonts
+|
+├── tests
+|   ├── users.e2e.js
+|   └── notifications.e2e.js
+|
+└── src
+    ├──components
+    └──index.html
+```
+
+#### puppy.api.js
+
+Sample:
+
+```javascript
+module.exports = {
+  '/api/users': {
+    'GET': {
+      headers: {
+        'Authorization': 'Bearer some-token'
+      },
+      status: 200,
+      body: 'hello its a GET'
+    }
+  }
+}
+```
+
+#### puppy.ws.js
+
+Sample:
+
+```javascript
+module.exports = [
+  {
+    delay: 1000,
+    interval: 1000,
+    messages: [
+      {seen: false, createdAt: Date.now(), text: 'I am a notification'}
+    ]
+  }
+}
+```
+
+#### puppy.config.js
+
+Sample:
+
+```javascript
+const path = require('path')
+
+module.exports = {
+    port: 1337
+}
+```
+
+### Your first End-to-End test
+
+Underneath, Puppy uses Jest for asserting and Puppeteer for executing actions in the browser. Please head to their documentation if you are not familiar.
+In the example below it assumes a file `index.html` inside `src` folder and a file with any name but ends with `.e2e.js` which will hold the test.
+
+```javascript
+describe('test', () => {
+  let page
+  
+  it('check that puppy works', async () => {
+      page = await puppy.newPage('http://localhost:1337/src/index.html') // page instance is a puppeteer page instance
+      
+      ... your code
+      
+      expect(...) // Jest
+  })
+}
+``` 
+
+To run this use the command
+
+`puppy test`
+
 ### Understanding what makes Puppy tick
 
 Puppy creates four servers with three of the four on the **same** port. It supports both HTTP and Web sockets for mocking as you probably deduced by now and it supports serving static files as well. 
-However, to avoid conflicts with puppy internal routes, there is also an internal server which puppy will proxy requests made by the tool. 
-For example PuppyJS handles a `/register` route  for dynamically registering HTTP responses. This means that if your app
-was using a `/register` for registering users, it wouldn't work. Instead of namespacing the Puppy's specific routes, 
+However, to avoid conflicts with Puppy internal routes, there is also an internal server which Puppy will proxy requests made by the tool. 
+For example Puppy handles a `/register` route  for dynamically registering HTTP responses. **This means that if your app
+was using a `/register` for registering users, it wouldn't work.** Instead of namespacing the Puppy's specific routes, 
 we chose to have an internal server handle that which automatically choses a free port in the 65000+ range and saves it in a `.puppy` folder in the current directory.
 
 `.puppy` folder is used for directory specific settings by Puppy. For now it only saves the current internal server port.
 
 ### How to use 
 
-There are two ways that you can use PuppyJS. For development purposes and for end-to-end testing using Jest and Puppeteer.
+There are two ways that you can use Puppy. For development purposes and for end-to-end testing using Jest and Puppeteer.
 
 For `development` you can use the following command:
 
@@ -62,7 +157,7 @@ For `testing` you can use the following command:
 
 `puppy test`
 
-When puppy is used in development mode, it automatically watches for changes made to `puppy.ws.js` and `puppy.api.js` files and reloads them. 
+When Puppy is used in development mode, it automatically watches for changes made to `puppy.ws.js` and `puppy.api.js` files and reloads them. 
 
 **Note** Changes made to `puppy.ws.js` need a page reload in the browser to take effect while changes to `puppy.api.js` are instant.
 
@@ -79,9 +174,17 @@ Puppy ws URL is set to /ws!
 
 ```
 
-### The puppy config file `puppy.config.js`
+### The Puppy configuration options
 
-You can fine-tune puppy by creating a puppy.config.js file in the top level of the current directory you want to use PuppyJS.
+#### Using command-line arguments
+
+You can fine-tune Puppy by passing arguments to `puppy serve` and `puppy test`
+
+Example: 
+
+```javascript
+puppy serve --port 9090
+```
 
 * **port**
     
@@ -89,7 +192,7 @@ You can fine-tune puppy by creating a puppy.config.js file in the top level of t
 
 * **ws** 
 
-    is the flag for setting a custom file for the web socket definition file, puppy needs it to be at the top level of the current directory next to package.json 
+    is the flag for setting a custom file for the web socket definition file, Puppy needs it to be at the top level of the current directory next to package.json 
     
 * **ws-port** 
 
@@ -109,7 +212,7 @@ You can fine-tune puppy by creating a puppy.config.js file in the top level of t
     
 * **verbose**
 
-    You can set this option to `true` if you want to have more specific logs spat out by PuppyJS. Default value is **false**.
+    You can set this option to `true` if you want to have more specific logs spat out by Puppy. Default value is **false**.
     
 * **headless**
 
@@ -117,9 +220,9 @@ You can fine-tune puppy by creating a puppy.config.js file in the top level of t
     
 * **inspect**
 
-    You can set this option to `true` if you want to be able to use a debugger in puppy's source code. Default **false**
+    You can set this option to `true` if you want to be able to use a debugger in Puppy's source code. Default **false**
     
-* **static_dir**
+* **static-dir**
     
    Define your own static dir in the current working directory for serving static assets. Default **dist**
    
@@ -128,35 +231,35 @@ You can fine-tune puppy by creating a puppy.config.js file in the top level of t
    Define your own index.html as an entrypoint in the current working directory. Default **index.html**
     
 
+#### Using Puppy config file `puppy.config.js`
 
-In the config file snapshot below, what you see there are the `default` values.
+Please note that the options below are in **camelCase** whereas above are defined in **kebab-case**.
+In the config file snapshot below, what you see there are the `default` values. 
 
 ```javascript
 const path = require('path')
 
 module.exports = {
-  'port': 8080,
-  
-  'api': path.resolve(process.cwd(), 'puppy.api.js'),
-  'api-port': 8080,
-
-  'ws': path.resolve(process.cwd(), 'puppy.ws.js'),
-  'ws-port': 8080,
-  'ws-url': '/ws',
-
-  'verbose': false,
-  'headless': false,
-  'inspect': false
-
-  'index-file': 'index.html',
-  'static-dir': path.resolve(process.cwd(), 'dist'),
+    ws: path.resolve(process.cwd(), 'puppy.ws.js'),
+    api: path.resolve(process.cwd(), 'puppy.api.js'),
+    
+    port: 8080,
+    wsPort: 8080,
+    apiPort: 8080,
+    
+    verbose: false,
+    headless: false,
+    
+    wsUrl: '/ws',
+    indexFile: 'index.html',
+    staticDir: path.resolve(process.cwd(), 'dist')
 }
 
 ```
 
 ### Testing
 
-PuppyJS was built to work with zero-config (see default config values above), so for testing you only need to run `puppy test` command. 
+Puppy was built to work with zero-config (see default config values above), so for testing you only need to run `puppy test` command. 
 Puppy will search for files ending in `.e2e.js` and run the tests so bear that in mind if you save your test files in `.spec.js`. 
 
 #### Puppy Global Object
@@ -399,8 +502,8 @@ API
 
 ```javascript
 const users = [
-  {name: 'Andrew', email: '9pitop@gmail.com', age: 44},
-  {name: 'Kostis', email: 'yolo@gmail.com', age: 35}
+  {name: 'Jane Doe', email: 'jane@gmail.com', age: 44},
+  {name: 'John Doe', email: 'john@gmail.com', age: 35}
 ]
 
 module.exports = [

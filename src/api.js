@@ -7,7 +7,7 @@ const chokidar = require('chokidar')
 const bodyParser = require('body-parser')
 
 const log = chalk.bold.magenta
-const error = chalk.keyword('red')
+const error = chalk.bold.red
 const warning = chalk.keyword('orange')
 
 function initialize (apiApp, internalApp) {

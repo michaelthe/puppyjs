@@ -39,15 +39,15 @@ const puppyConfig = require('../puppy.config.js')
   const API = arguments['api'] || puppyConfig['api']
 
   const PORT = arguments['port'] || puppyConfig['port']
-  const WS_PORT = arguments['ws-port'] || arguments['api-port'] || arguments['port'] || puppyConfig['ws-api'] || puppyConfig['api-port'] || puppyConfig['port']
-  const API_PORT = arguments['api-port'] || arguments['port'] || puppyConfig['api-port'] || puppyConfig['port']
+  const WS_PORT = arguments['ws-port'] || arguments['api-port'] || arguments['port'] || puppyConfig['wsApi'] || puppyConfig['apiPort'] || puppyConfig['port']
+  const API_PORT = arguments['api-port'] || arguments['port'] || puppyConfig['apiPort'] || puppyConfig['port']
 
   const VERBOSE = arguments['verbose'] || puppyConfig['verbose'] || false
   const HEADLESS = arguments['headless'] || puppyConfig['headless'] || false
 
-  const WS_URL = arguments['ws-url'] || puppyConfig['ws-url']
-  const INDEX_FILE = arguments['index-file'] || puppyConfig['index-file']
-  const STATIC_DIR = arguments['static-dir'] || puppyConfig['static-dir']
+  const WS_URL = arguments['ws-url'] || puppyConfig['wsUrl']
+  const INDEX_FILE = arguments['index-file'] || puppyConfig['indexFile']
+  const STATIC_DIR = arguments['static-dir'] || puppyConfig['staticDir']
 
   console.log(chalk.cyan(logo(arguments.headless)))
 
