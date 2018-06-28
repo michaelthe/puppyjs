@@ -47,23 +47,20 @@ Below you can find a sample directory structure. The important thing to notice a
 ```
 .
 |
-├── puppy.api.js
-├── puppy.ws.js
 ├── puppy.config.js <optional>
+├── puppy.api.js <optional>
+├── puppy.ws.js <optional>
 |
 ├── package.json
 |
-├── public
+├── dist
 |   ├── background.jpg
+|   ├── index.html
 |   └── fonts
 |
-├── tests
-|   ├── users.e2e.js
-|   └── notifications.e2e.js
-|
-└── src
-    ├──components
-    └──index.html
+└── tests
+    ├── users.e2e.js
+    └── notifications.e2e.js
 ```
 
 #### puppy.api.js
@@ -105,8 +102,6 @@ module.exports = [
 Sample:
 
 ```javascript
-const path = require('path')
-
 module.exports = {
     port: 1337
 }
