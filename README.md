@@ -137,7 +137,7 @@ To run this use the command
 puppy test
 ```
 
-#### Puppy dev mock server
+### Puppy Development Mock Server
 
 You can use the same `puppy.api.js` file that you configure above for development purpose. Run `puppy serve` and you can now make a `GET` request to `/api/users` and get a reply back as set in the `puppy.api.js` file. 
 
