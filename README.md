@@ -44,7 +44,7 @@ puppy test
 
 Below you can find a sample directory structure. The important thing to notice are the `puppy.api.js`, `puppy.ws.js` and `puppy.config.js` and that they are at the root level of the directory.
 
-```javascript
+```
 .
 |
 ├── puppy.api.js
@@ -133,7 +133,13 @@ describe('test', () => {
 
 To run this use the command
 
-`puppy test`
+```javascript
+puppy test
+```
+
+#### Puppy dev mock server
+
+You can use the same `puppy.api.js` file that you configure above for development purpose. Run `puppy serve` and you can now make a `GET` request to `/api/users` and get a reply back as set in the `puppy.api.js` file. 
 
 ### Understanding what makes Puppy tick
 
