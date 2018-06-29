@@ -10,7 +10,6 @@ describe('api', function () {
   })
 
   it('should show ws messages', async () => {
-    page = await puppy.newPage('http://127.0.0.1:8080/index.html')
     await page.waitFor(() => $('.ws-data').length)
 
     let msg = await page.evaluate(() => $('.ws-data').text())
