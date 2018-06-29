@@ -27,7 +27,7 @@ function initialize (wsApp, internalApp) {
       }
 
       if (process.env.VERBOSE === 'true' && event === 'change') {
-        console.log(chalk.bold.cyan('Puppy WS: Changes detected, reloading file. Refresh browser to view changes'))
+        console.log(chalk.bold.cyan('Puppy WS: Changes detected, reloading WS file. Refresh browser to view changes'))
       }
 
       delete require.cache[require.resolve(path)]
