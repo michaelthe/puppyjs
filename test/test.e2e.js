@@ -44,6 +44,7 @@ describe('test', () => {
     page = await puppy.newPage('http://127.0.0.1:8080/index.html')
     await page.waitFor('.get')
     const getResponse = await page.evaluate(() => $('.get').text())
+    
     expect(getResponse).toContain('hello its a GET')
   })
 
@@ -51,6 +52,7 @@ describe('test', () => {
     page = await puppy.newPage('http://127.0.0.1:8080/index.html')
     await page.waitFor('.post')
     const getResponse = await page.evaluate(() => $('.post').text())
+
     expect(getResponse).toContain('hello its a POST')
   })
 
@@ -58,6 +60,7 @@ describe('test', () => {
     page = await puppy.newPage('http://127.0.0.1:8080/index.html')
     await page.waitFor('.default')
     const getResponse = await page.evaluate(() => $('.default').text())
+
     expect(getResponse).toContain('hello its a default')
   })
 
@@ -65,18 +68,24 @@ describe('test', () => {
     page = await puppy.newPage('http://127.0.0.1:8080/index.html')
     await page.waitFor('.patch')
     const getResponse = await page.evaluate(() => $('.patch').text())
+
     expect(getResponse).toContain('hello from a PATCH')
   })
 
   it('should show ws messages', async () => {
     page = await puppy.newPage('http://127.0.0.1:8080/index.html')
     await page.waitFor(() => $('.ws-data').length)
+
     let msg = await page.evaluate(() => $('.ws-data').text())
     expect(msg).toContain('"text":"I am a notification"')
+
     await page.waitFor(500)
+
     msg = await page.evaluate(() => $('.ws-data').text())
     expect(['12', '3', '52', '23', '55'].includes(msg)).toBeTruthy()
+
     await page.waitFor(500)
+
     msg = await page.evaluate(() => $('.ws-data').text())
     expect(msg).toBe('[{"name":"Jane Doe","email":"jane@gmail.com","age":44},{"name":"John Doe","email":"john@gmail.com","age":35}]')
   })
