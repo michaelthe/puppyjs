@@ -1,4 +1,4 @@
-# PuppyJS 
+# PuppyJS | [Docs :notebook:](https://github.com/michaelthe/puppyjs/wiki)
 
 ![npm](https://img.shields.io/npm/l/puppyjs.svg?style=flat-square)
 ![npm](https://img.shields.io/npm/v/puppyjs.svg?style=flat-square)
@@ -15,27 +15,29 @@ Puppy also lets you mock HTTP APIs and web socket events so you can
 develop your application until the backend is ready as well as
 run your E2E tests against the same mock API and socket events you used for development.  
 
-## Install  
+## Getting Started
+
+### Install  
 ```bash
 npm install puppyjs --save-dev
 ```
 
-## Install globally
+### Install globally
 ```bash
 npm install puppyjs --global
 ```
 
-## Get some help
+### Get some help
 ```bash
 puppy --help
 ```
 
-## Run mocking servers
+### Run mocking servers
 ```bash
 puppy serve
 ```
 
-## Run tests
+### Run tests
 ```bash
 puppy test
 ```
