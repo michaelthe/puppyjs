@@ -21,7 +21,7 @@ function initialize (wsApp, internalApp) {
 
   chokidar
     .watch(wsFile, {usePolling: true})
-    .on('all', path => {
+    .on('all', (event, path) => {
       if (event !== 'add' && event !== 'change') {
         return
       }
