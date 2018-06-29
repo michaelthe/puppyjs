@@ -7,7 +7,7 @@ const chokidar = require('chokidar')
 const bodyParser = require('body-parser')
 
 const log = chalk.bold.magenta
-const error = chalk.keyword('red')
+const error = chalk.bold.red
 const warning = chalk.keyword('orange')
 
 function initialize (apiApp, internalApp) {
@@ -45,9 +45,9 @@ function initialize (apiApp, internalApp) {
     apiOnDemandResponses[path] = apiOnDemandResponses[path] || {}
 
     apiOnDemandResponses[path][method || 'DEFAULT'] = {
-      body: data || 'ok',
+      body: data || 'OK',
       status: status || 200,
-      headers: headers || []
+      headers: headers || {}
     }
 
     res.send('ok')

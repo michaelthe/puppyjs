@@ -1,24 +1,26 @@
-# puppyjs 
+# PuppyJS 
 
 ![npm](https://img.shields.io/npm/l/puppyjs.svg?style=flat-square)
 ![npm](https://img.shields.io/npm/v/puppyjs.svg?style=flat-square)
 ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/michaelthe/puppyjs/master.svg?style=flat-square)
 ![CircleCI branch](https://img.shields.io/circleci/project/github/michaelthe/puppyjs/master.svg?style=flat-square)
 
-## puppeteer + jest + awesome-code = puppyjs
+## Puppeteer + Jest + awesome-code = Puppy.JS
 
-Puppyjs is a framework agnostic e2e testing and mocking tool for front end developers.
-Puppy depends on jest for tests and puppeteer for the testing environment, if you know jest and puppeteer then you 80% know puppy.
-Puppy also lets you mock http APIs and web socket events so you both; 
-develop your application until the backend is ready; 
-and, run your e2e test against the same mock API and socket events you used for development.  
+PuppyJS is a framework agnostic E2E (end-to-end) testing and mocking tool for front end developers.
+Puppy depends on [Jest](http://jestjs.io/) for tests and [Puppeteer](https://github.com/GoogleChrome/puppeteer) 
+for the testing environment so if you know these tools then you already know 80% of Puppy.
+
+Puppy also lets you mock HTTP APIs and web socket events so you can 
+develop your application until the backend is ready as well as
+run your E2E tests against the same mock API and socket events you used for development.  
 
 ## Install  
 ```bash
 npm install puppyjs --save-dev
 ```
 
-### Install globally
+## Install globally
 ```bash
 npm install puppyjs --global
 ```
@@ -38,88 +40,32 @@ puppy serve
 puppy test
 ```
 
-## The puppy config file `puppy.config.js`
+### Sample directory structure
 
-```javascript
-const path = require('path')
-
-module.exports = {
-  'ws': path.resolve(process.cwd(), 'puppy.ws.js'),
-  'api': path.resolve(process.cwd(), 'puppy.api.js'),
-
-  'port': 8080,
-  'ws-port': 8080,
-  'api-port': 8080,
-
-  'verbose': false,
-  'headless': false,
-
-  'ws-url': '/ws',
-  'index-file': 'index.html',
-  'static-dir': path.resolve(process.cwd(), 'dist'),
-}
+Below you can find a sample directory structure. The important thing to notice are the `puppy.api.js`, `puppy.ws.js` and `puppy.config.js` and that they are at the root level of the directory.
 
 ```
-
-## The puppy web socket file `puppy.ws.js`
-
-The `puppy.ws.js` file is used to simulate the websocket portion of a back-end system. It can simulate and emit messages with delay and/or interval or once-off dispatching.
-
-The default filename can be changed by providing a flag.
-
-```javascript
-puppy serve --api mocked.api.js
-
-puppy test --api mocked.api.js
-````
-
-API
-
-   * Events: Array(Objects)
-   
-   * Event: 
-      * label: String **optional**
-      * delay: Number **optional**
-      * interval: Number **optional**
-      * messages: \<Object | function>[] | Object | Function
-
-```javascript
-const users = [
-  {name: 'Andrew', email: '9pitop@gmail.com', age: 44},
-  {name: 'Kostis', email: 'yolo@gmail.com', age: 35}
-]
-
-module.exports = [
-  {
-    delay: 1000,
-    interval: 1000,
-    messages: [
-      users,
-      {seen: false, createdAt: Date.now(), text: 'I am a notification'}
-    ]
-  },
-  {
-    messages: async () => {
-      const items = [12,3,52,23]
-      return items[Math.floor(Math.random()*items.length)]
-    },
-    interval: 3000
-  }
-]
+.
+|
+├── puppy.config.js <optional>
+├── puppy.api.js <optional>
+├── puppy.ws.js <optional>
+|
+├── package.json
+|
+├── dist
+|   ├── background.jpg
+|   ├── index.html
+|   └── fonts
+|
+└── tests
+    ├── users.e2e.js
+    └── notifications.e2e.js
 ```
 
-## The puppy api file `puppy.api.js`
+#### puppy.api.js
 
-The `puppy.api.js` file is used to define the default mocked responses when a client makes a request to an endpoint. It can be used to quickly mock the back-end part of an application as well as used in testing to provide default responses instead of hitting an actual API in production.
-
-The default filename can be changed by providing a flag.
-
-```javascript
-puppy serve --api mocked.api.js
-
-puppy test --api mocked.api.js
-```
-####Example API definition file
+Sample:
 
 ```javascript
 module.exports = {
@@ -130,34 +76,62 @@ module.exports = {
       },
       status: 200,
       body: 'hello its a GET'
-    },
-    'POST': {
-      headers: {
-        'Authorization': 'Bearer some-token'
-      },
-      status: 200,
-      body: 'hello its a POST'
-    },
-    'DEFAULT': {
-      headers: {
-        'Authorization': 'Bearer some-token'
-      },
-      status: 200,
-      body: 'hello its a default'
     }
   }
 }
 ```
 
-**Note** the `DEFAULT` key can be used to define a fallback response when the client makes a request with a method other than the specified ones. 
-In the example below if the client makes a `PATCH` request, the `DEFAULT` response will be given back to the client.
+#### puppy.ws.js
 
-Default values if not given for any default response provided in the API definition file:
+Sample:
 
 ```javascript
-{
-  status: 200,
-  body: 'EMPTY-BODY',
-  headers: {}
+module.exports = [
+  {
+    delay: 1000,
+    interval: 1000,
+    messages: [
+      {seen: false, createdAt: Date.now(), text: 'I am a notification'}
+    ]
+  }
 }
 ```
+
+#### puppy.config.js
+
+Sample:
+
+```javascript
+module.exports = {
+    port: 1337
+}
+```
+
+### Your first End-to-End test
+
+Underneath, Puppy uses Jest for asserting and Puppeteer for executing actions in the browser. Please head to their documentation if you are not familiar.
+In the example below it assumes a file `index.html` inside `src` folder and a file with any name but ends with `.e2e.js` which will hold the test.
+
+```javascript
+describe('test', () => {
+  let page
+  
+  it('check that puppy works', async () => {
+      page = await puppy.newPage('http://localhost:1337/src/index.html') // page instance is a puppeteer page instance
+      
+      ... your code
+      
+      expect(...) // Jest
+  })
+}
+``` 
+
+To run this use the command
+
+```javascript
+puppy test
+```
+
+### Puppy Development Mock Server
+
+You can use the same `puppy.api.js` file that you configure above for development purpose. Run `puppy serve` and you can now make a `GET` request to `/api/users` and get a reply back as set in the `puppy.api.js` file. 

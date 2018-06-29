@@ -1,6 +1,6 @@
 const users = [
-  {name: 'Andrew', email: '9pitop@gmail.com', age: 44},
-  {name: 'Kostis', email: 'yolo@gmail.com', age: 35}
+  {name: 'Jane Doe', email: 'jane@gmail.com', age: 44},
+  {name: 'John Doe', email: 'john@gmail.com', age: 35}
 ]
 
 module.exports = [
