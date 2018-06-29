@@ -5,18 +5,24 @@ const users = [
 
 module.exports = [
   {
-    delay: 1000,
-    interval: 1000,
+    delay: 500,
+    interval: 2000,
     messages: [
       users,
-      {seen: false, createdAt: Date.now(), text: 'I am a notification'}
+      {seen: false, date: Date.now(), text: 'I am a notification'}
     ]
   },
   {
     messages: async () => {
-      const items = [12,3,52,23, 55]
-      return items[Math.floor(Math.random()*items.length)]
+      const items = [12, 3, 52, 23, 55]
+      return items[Math.floor(Math.random() * items.length)]
     },
     interval: 3000
+  },
+  {
+    messages: [
+      users
+    ],
+    interval: 3500
   }
 ]
