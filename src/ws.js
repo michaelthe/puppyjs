@@ -26,7 +26,7 @@ function initialize (wsApp, internalApp) {
         return
       }
 
-      if (process.env.VERBOSE === 'true') {
+      if (process.env.VERBOSE === 'true' && event !== 'change') {
         console.log(chalk.bold.cyan('Puppy WS: Changes detected, reloading file. Refresh browser to view changes'))
       }
 
