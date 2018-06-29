@@ -8,7 +8,6 @@ const bodyParser = require('body-parser')
 
 const log = chalk.bold.magenta
 const error = chalk.bold.red
-const warning = chalk.keyword('orange')
 
 let apiDefaultResponses = {}
 let apiOnDemandResponses = {}
@@ -31,11 +30,12 @@ function _loadOnDemand (path) {
     apiDefaultResponses = newResponses
 
     if (process.env.VERBOSE === 'true') {
-      console.log(log(`Puppy API: loaded on demand responses from ${path}`))
+      console.log(log(`Puppy API: loaded on demand responses from ${process.env.API}`))
     }
   } catch (e) {
     if (process.env.VERBOSE === 'true') {
-      console.log(error(`Puppy API: failed to load on demand responses from ${path}`))
+      console.log(error(`Puppy API: failed to load on demand responses from ${process.env.API}`))
+      console.error(e)
     }
   }
 }
@@ -47,7 +47,19 @@ function initialize (apiApp, internalApp) {
     _loadOnDemand(apiFile)
   }
 
-  chokidar.watch(apiFile, {usePolling: true}).on('change', _loadOnDemand)
+  chokidar
+    .watch(apiFile, {usePolling: true})
+    .on('all', (event, path) => {
+      if (event !== 'add' && event !== 'change') {
+        return
+      }
+
+      if (process.env.VERBOSE === 'true' && event === 'change') {
+        console.log(chalk.bold.cyan(`Puppy API: Changes detected, reloading ${process.env.API} file`))
+      }
+
+      _loadOnDemand(path)
+    })
 
   apiApp.use(cors())
   apiApp.use(bodyParser.json())

@@ -1,51 +1,69 @@
 'use strict'
-const chalk = require('chalk')
-const expressuws = require('express-ws')
-const path = require('path')
 const fs = require('fs')
+const path = require('path')
+const chalk = require('chalk')
 const chokidar = require('chokidar')
+const expressuws = require('express-ws')
+
+let timeouts = []
+let intervals = []
+let wsDefaultResponses = {}
+
+const log = chalk.bold.magenta
+const error = chalk.bold.red
 const socket = chalk.bold.greenBright
 
-function initialize (wsApp, internalApp) {
+function _loadOnDemand (path) {
+  delete require.cache[require.resolve(path)]
 
-  const expressUms = expressuws(wsApp)// eslint-disable-line
-
-  const wss = expressUms.getWss()
-  const wsOnDemandResponses = {}
-
-  let wsFile = path.resolve(process.cwd(), process.env.WS)
-  let wsDefaultResponses = {}
-
-  let timeouts = []
-  let intervals = []
-
-  if (fs.existsSync(wsFile)) {
-    wsDefaultResponses = require(wsFile)
+  let newResponses
+  try {
+    newResponses = require(path)
 
     wsDefaultResponses = Object
-      .keys(wsDefaultResponses)
-      .map(key => Object.assign(wsDefaultResponses[key], {label: key}))
+      .keys(newResponses)
+      .map(key => Object.assign(newResponses[key], {label: key}))
+
+    timeouts.forEach(timeout => clearTimeout(timeout))
+    intervals.forEach(interval => clearInterval(interval))
+
+    timeouts = []
+    intervals = []
+
+    if (process.env.VERBOSE === 'true') {
+      console.log(log(`Puppy WS: ${process.env.WS} loaded. Refresh browser to view changes`))
+    }
+  } catch (e) {
+    if (process.env.VERBOSE === 'true') {
+      console.log(error(`Puppy WS: failed to load default responses from ${process.env.WS}`))
+      console.error(e)
+    }
+  }
+}
+
+function initialize (wsApp, internalApp) {
+  const expressUms = expressuws(wsApp) // eslint-disable-line
+
+  const wss = expressUms.getWss()
+
+  const wsFile = path.resolve(process.cwd(), process.env.WS)
+
+  if (fs.existsSync(wsFile)) {
+    _loadOnDemand(wsFile)
   }
 
   chokidar
     .watch(wsFile, {usePolling: true})
-    .on('change', path => {
-      if (process.env.VERBOSE === 'true') {
-        console.log(chalk.bold.cyan('Puppy WS: Changes detected, reloading file. Refresh browser to view changes'))
+    .on('all', (event, path) => {
+      if (event !== 'add' && event !== 'change') {
+        return
       }
 
-      delete require.cache[require.resolve(path)]
-      wsDefaultResponses = require(path)
+      if (process.env.VERBOSE === 'true' && event === 'change') {
+        console.log(chalk.bold.cyan(`Puppy WS: Changes detected, reloading ${process.env.WS} file`))
+      }
 
-      wsDefaultResponses = Object
-        .keys(wsDefaultResponses)
-        .map(key => Object.assign(wsDefaultResponses[key], {label: key}))
-
-      timeouts.forEach(timeout => clearTimeout(timeout))
-      intervals.forEach(interval => clearInterval(interval))
-
-      timeouts = []
-      intervals = []
+      _loadOnDemand(path)
     })
 
   wsApp.ws(process.env.WS_URL, ws => {
