@@ -1,28 +1,25 @@
-const users = [
-  {name: 'Jane Doe', email: 'jane@gmail.com', age: 44},
-  {name: 'John Doe', email: 'john@gmail.com', age: 35}
-]
-
-module.exports = [
-  {
+module.exports = {
+  notification: {
     delay: 500,
     interval: 2000,
-    messages: [
-      users,
-      {seen: false, date: Date.now(), text: 'I am a notification'}
-    ]
+    message: {
+      seen: false,
+      date: Date.now(),
+      text: 'I am a notification'
+    }
   },
-  {
-    messages: async () => {
+  randomNumber: {
+    interval: 3000,
+    message: async () => {
       const items = [12, 3, 52, 23, 55]
       return items[Math.floor(Math.random() * items.length)]
-    },
-    interval: 3000
+    }
   },
-  {
-    messages: [
-      users
-    ],
-    interval: 3500
+  users: {
+    interval: 3500,
+    message: [
+      {name: 'Jane Doe', email: 'jane@gmail.com', age: 44},
+      {name: 'John Doe', email: 'john@gmail.com', age: 35}
+    ]
   }
 }
