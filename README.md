@@ -1,4 +1,4 @@
-# PuppyJS | [Docs](https://github.com/michaelthe/puppyjs/wiki)
+# PuppyJS | [Docs :notebook:](https://github.com/michaelthe/puppyjs/wiki)
 
 ![npm](https://img.shields.io/npm/l/puppyjs.svg?style=flat-square)
 ![npm](https://img.shields.io/npm/v/puppyjs.svg?style=flat-square)
