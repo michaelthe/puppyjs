@@ -10,22 +10,44 @@ const log = chalk.bold.magenta
 const error = chalk.bold.red
 const warning = chalk.keyword('orange')
 
-function initialize (apiApp, internalApp) {
-  let apiDefaultResponses = {}
-  let apiOnDemandResponses = {}
+let apiDefaultResponses = {}
+let apiOnDemandResponses = {}
 
+function _loadOnDemand (path) {
+  delete require.cache[require.resolve(path)]
+
+  let newResponses
+  try {
+    newResponses = require(path)
+
+    for (const path of Object.keys(newResponses)) {
+      for (const method of Object.keys(newResponses[path])) {
+        let response = newResponses[path][method]
+        delete newResponses[path][method]
+        newResponses[path][method.toUpperCase()] = response
+      }
+    }
+
+    apiDefaultResponses = newResponses
+
+    if (process.env.VERBOSE === 'true') {
+      console.log(log(`Puppy API: loaded on demand responses from ${path}`))
+    }
+  } catch (e) {
+    if (process.env.VERBOSE === 'true') {
+      console.log(error(`Puppy API: failed to load on demand responses from ${path}`))
+    }
+  }
+}
+
+function initialize (apiApp, internalApp) {
   let apiFile = path.resolve(process.cwd(), process.env.API)
 
   if (fs.existsSync(apiFile)) {
-    apiDefaultResponses = require(apiFile)
+    _loadOnDemand(apiFile)
   }
 
-  chokidar
-    .watch(apiFile, {usePolling: true})
-    .on('change', path => {
-      delete require.cache[require.resolve(path)]
-      apiDefaultResponses = require(path)
-    })
+  chokidar.watch(apiFile, {usePolling: true}).on('change', _loadOnDemand)
 
   apiApp.use(cors())
   apiApp.use(bodyParser.json())
@@ -36,15 +58,17 @@ function initialize (apiApp, internalApp) {
   })
 
   internalApp.post('/register', (req, res) => {
-    const {data, headers, status, path, method} = req.body
+    let {data, headers, status, path, method} = req.body
+
+    method = method.toUpperCase() || 'DEFAULT'
 
     if (process.env.VERBOSE === 'true') {
-      console.debug(log(`Puppy register METHOD %s URL %s`), method || 'DEFAULT', path)
+      console.log(log(`Puppy API: register METHOD %s URL %s`), method, path)
     }
 
     apiOnDemandResponses[path] = apiOnDemandResponses[path] || {}
 
-    apiOnDemandResponses[path][method || 'DEFAULT'] = {
+    apiOnDemandResponses[path][method] = {
       body: data || 'OK',
       status: status || 200,
       headers: headers || {}
