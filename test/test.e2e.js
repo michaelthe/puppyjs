@@ -78,6 +78,6 @@ describe('test', () => {
     expect(['12', '3', '52', '23', '55'].includes(msg)).toBeTruthy()
     await page.waitFor(500)
     msg = await page.evaluate(() => $('.ws-data').text())
-    expect(msg).toBe('[{"name":"Jane Doe","email":"jane@doe.com","age":44},{"name":"John Doe","email":"john@doe.com","age":35}]')
+    expect(msg).toBe('[{"name":"Jane Doe","email":"jane@gmail.com","age":44},{"name":"John Doe","email":"john@gmail.com","age":35}]')
   })
 })
