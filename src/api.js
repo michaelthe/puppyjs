@@ -16,15 +16,28 @@ function initialize (apiApp, internalApp) {
 
   let apiFile = path.resolve(process.cwd(), process.env.API)
 
-  if (fs.existsSync(apiFile)) {
-    apiDefaultResponses = require(apiFile)
-  }
-
   chokidar
     .watch(apiFile, {usePolling: true})
-    .on('change', path => {
+    .on('all', (event, path) => {
+      if (event !== 'add' && event !== 'change') {
+        return
+      }
+
+      if (process.env.VERBOSE === 'true' && event === 'change') {
+        console.log(chalk.bold.cyan('Puppy WS: Changes detected, reloading API file'))
+      }
+
       delete require.cache[require.resolve(path)]
-      apiDefaultResponses = require(path)
+
+      try {
+        apiDefaultResponses = require(apiFile)
+      } catch (err) {
+        // to avoid printing this before printing the usual console.logs()
+        setTimeout(() => {
+          console.error(err)
+          console.log(chalk.bold.red(`Error in ${process.env.API} file`))
+        }, 200)
+      }
     })
 
   apiApp.use(cors())

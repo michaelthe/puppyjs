@@ -19,19 +19,28 @@ function initialize (wsApp, internalApp) {
   let timeouts = []
   let intervals = []
 
-  if (fs.existsSync(wsFile)) {
-    wsDefaultResponses = require(wsFile)
-  }
-
   chokidar
     .watch(wsFile, {usePolling: true})
-    .on('change', path => {
-      if (process.env.VERBOSE === 'true') {
-        console.log(chalk.bold.cyan('Puppy WS: Changes detected, reloading file. Refresh browser to view changes'))
+    .on('all', (event, path) => {
+      if (event !== 'add' && event !== 'change') {
+        return
+      }
+
+      if (process.env.VERBOSE === 'true' && event === 'change') {
+        console.log(chalk.bold.cyan('Puppy WS: Changes detected, reloading WS file. Refresh browser to view changes'))
       }
 
       delete require.cache[require.resolve(path)]
-      wsDefaultResponses = require(path)
+
+      try {
+        wsDefaultResponses = require(path)
+      } catch (err) {
+        // to avoid printing this before printing the usual console.logs()
+        setTimeout(() => {
+          console.error(err)
+          console.log(chalk.bold.red(`Error in ${process.env.WS} file`))
+        }, 200)
+      }
 
       timeouts.forEach(timeout => clearTimeout(timeout))
       intervals.forEach(interval => clearInterval(interval))
