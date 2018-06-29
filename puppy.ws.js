@@ -25,4 +25,4 @@ module.exports = [
     ],
     interval: 3500
   }
-]
+}
