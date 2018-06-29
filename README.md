@@ -88,14 +88,14 @@ module.exports = {
 Sample:
 
 ```javascript
-module.exports = [
-  {
-    delay: 1000,
-    interval: 1000,
-    messages: [
-      {seen: false, createdAt: Date.now(), text: 'I am a notification'}
-    ]
-  }
+module.exports = {
+  'notification': {
+      delay: 1000,
+      interval: 1000,
+      message: [
+        {seen: false, createdAt: Date.now(), text: 'I am a notification'}
+      ]
+    }
 }
 ```
 
