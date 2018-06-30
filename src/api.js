@@ -1,5 +1,4 @@
 'use strict'
-const fs = require('fs')
 const path = require('path')
 const cors = require('cors')
 const chalk = require('chalk')
@@ -8,23 +7,49 @@ const bodyParser = require('body-parser')
 
 const log = chalk.bold.magenta
 const error = chalk.bold.red
-const warning = chalk.keyword('orange')
+
+let apiDefaultResponses = {}
+let apiOnDemandResponses = {}
 
 function initialize (apiApp, internalApp) {
-  let apiDefaultResponses = {}
-  let apiOnDemandResponses = {}
-
   let apiFile = path.resolve(process.cwd(), process.env.API)
-
-  if (fs.existsSync(apiFile)) {
-    apiDefaultResponses = require(apiFile)
-  }
 
   chokidar
     .watch(apiFile, {usePolling: true})
-    .on('change', path => {
+    .on('all', (event, path) => {
+      if (event !== 'add' && event !== 'change') {
+        return
+      }
+
+      if (process.env.VERBOSE === 'true' && event === 'change') {
+        console.log(chalk.bold.cyan(`Puppy API: Changes detected, reloading ${process.env.API} file`))
+      }
+
       delete require.cache[require.resolve(path)]
-      apiDefaultResponses = require(path)
+
+      let newResponses
+      try {
+        newResponses = require(path)
+
+        for (const path of Object.keys(newResponses)) {
+          for (const method of Object.keys(newResponses[path])) {
+            let response = newResponses[path][method]
+            delete newResponses[path][method]
+            newResponses[path][method.toUpperCase()] = response
+          }
+        }
+
+        apiDefaultResponses = newResponses
+
+        if (process.env.VERBOSE === 'true') {
+          console.log(log(`Puppy API: loaded on demand responses from ${process.env.API}`))
+        }
+      } catch (e) {
+        if (process.env.VERBOSE === 'true') {
+          console.log(error(`Puppy API: failed to load on demand responses from ${process.env.API}`))
+          console.error(e)
+        }
+      }
     })
 
   apiApp.use(cors())
@@ -36,15 +61,17 @@ function initialize (apiApp, internalApp) {
   })
 
   internalApp.post('/register', (req, res) => {
-    const {data, headers, status, path, method} = req.body
+    let {data, headers, status, path, method} = req.body
+
+    method = method.toUpperCase() || 'DEFAULT'
 
     if (process.env.VERBOSE === 'true') {
-      console.debug(log(`Puppy register METHOD %s URL %s`), method || 'DEFAULT', path)
+      console.log(log(`Puppy API: register METHOD %s URL %s`), method, path)
     }
 
     apiOnDemandResponses[path] = apiOnDemandResponses[path] || {}
 
-    apiOnDemandResponses[path][method || 'DEFAULT'] = {
+    apiOnDemandResponses[path][method] = {
       body: data || 'OK',
       status: status || 200,
       headers: headers || {}
