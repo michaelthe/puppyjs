@@ -16,7 +16,7 @@ let staticApp = express()
 let internalApp = express()
 
 internalApp.use(cors())
-internalApp.use(bodyParser.json())
+internalApp.use(bodyParser.json({strict:false}))
 
 internalApp.get('/status', (req, res) => res.end('ok'))
 

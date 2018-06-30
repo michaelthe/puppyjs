@@ -10,19 +10,36 @@ describe('api', function () {
   })
 
   it('should show ws messages', async () => {
-    await page.waitFor(() => $('.ws-data').length)
-
+    await page.waitFor(() => $('.ws-data').text().match(/notification/))
     let msg = await page.evaluate(() => $('.ws-data').text())
     expect(msg).toContain('"text":"I am a notification"')
 
-    await page.waitFor(500)
-
+    await page.waitFor(() => [1, 2, 3, 4, 5].map(n => '' + n).includes($('.ws-data').text()))
     msg = await page.evaluate(() => $('.ws-data').text())
-    expect(['12', '3', '52', '23', '55'].includes(msg)).toBeTruthy()
+    expect([1, 2, 3, 4, 5].map(n => '' + n).includes(msg)).toBeTruthy()
 
-    await page.waitFor(500)
-
+    await page.waitFor(() => $('.ws-data').text().match(/john/i))
     msg = await page.evaluate(() => $('.ws-data').text())
-    expect(msg).toBe('[{"name":"Jane Doe","email":"jane@gmail.com","age":44},{"name":"John Doe","email":"john@gmail.com","age":35}]')
+    expect(msg.match(/john/i)).toBeTruthy()
+
+    await page.waitFor(() => $('.ws-data').text().match(/notification/))
+    msg = await page.evaluate(() => $('.ws-data').text())
+    expect(msg).toContain('"text":"I am a notification"')
+  })
+
+  it('should show the emitted message', async () => {
+    await page.waitFor(() => $('.ws-data').text().match(/notification/))
+    let msg = await page.evaluate(() => $('.ws-data').text())
+    expect(msg).toContain('"text":"I am a notification"')
+
+    await puppy.emit('emitted message')
+
+    await page.waitFor(() => $('.ws-data').text().match(/emitted message/i))
+    msg = await page.evaluate(() => $('.ws-data').text())
+    expect(msg.match(/message/i)).toBeTruthy()
+
+    await page.waitFor(() => [1, 2, 3, 4, 5].map(n => '' + n).includes($('.ws-data').text()))
+    msg = await page.evaluate(() => $('.ws-data').text())
+    expect([1, 2, 3, 4, 5].map(n => '' + n).includes(msg)).toBeTruthy()
   })
 })

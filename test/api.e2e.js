@@ -36,4 +36,34 @@ describe('api', function () {
 
     expect(getResponse).toContain('hello from a PATCH')
   })
+
+  it('should get the registered response', async () => {
+    await page.waitFor('.patch')
+
+    await puppy.register({path: '/api/user', method: 'patch', data: 'updated user'})
+
+    await page.reload()
+    await page.waitFor('.patch')
+
+    const getResponse = await page.evaluate(() => $('.patch').text())
+    expect(getResponse).toContain('updated user')
+  })
+
+  it('should get the original response again', async () => {
+    await page.waitFor('.patch')
+
+    await puppy.register({path: '/api/user', method: 'patch', data: 'updated user'})
+
+    await page.reload()
+    await page.waitFor('.patch')
+
+    const getResponse = await page.evaluate(() => $('.patch').text())
+    expect(getResponse).toContain('updated user')
+
+    await page.reload()
+    await page.waitFor('.patch')
+
+    const getOriginalResponse = await page.evaluate(() => $('.patch').text())
+    expect(getOriginalResponse).toContain('hello from a PATCH')
+  })
 })
