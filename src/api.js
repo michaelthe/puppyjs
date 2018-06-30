@@ -1,5 +1,4 @@
 'use strict'
-const fs = require('fs')
 const path = require('path')
 const cors = require('cors')
 const chalk = require('chalk')
@@ -12,40 +11,8 @@ const error = chalk.bold.red
 let apiDefaultResponses = {}
 let apiOnDemandResponses = {}
 
-function _loadOnDemand (path) {
-  delete require.cache[require.resolve(path)]
-
-  let newResponses
-  try {
-    newResponses = require(path)
-
-    for (const path of Object.keys(newResponses)) {
-      for (const method of Object.keys(newResponses[path])) {
-        let response = newResponses[path][method]
-        delete newResponses[path][method]
-        newResponses[path][method.toUpperCase()] = response
-      }
-    }
-
-    apiDefaultResponses = newResponses
-
-    if (process.env.VERBOSE === 'true') {
-      console.log(log(`Puppy API: loaded on demand responses from ${process.env.API}`))
-    }
-  } catch (e) {
-    if (process.env.VERBOSE === 'true') {
-      console.log(error(`Puppy API: failed to load on demand responses from ${process.env.API}`))
-      console.error(e)
-    }
-  }
-}
-
 function initialize (apiApp, internalApp) {
   let apiFile = path.resolve(process.cwd(), process.env.API)
-
-  if (fs.existsSync(apiFile)) {
-    _loadOnDemand(apiFile)
-  }
 
   chokidar
     .watch(apiFile, {usePolling: true})
@@ -58,7 +25,31 @@ function initialize (apiApp, internalApp) {
         console.log(chalk.bold.cyan(`Puppy API: Changes detected, reloading ${process.env.API} file`))
       }
 
-      _loadOnDemand(path)
+      delete require.cache[require.resolve(path)]
+
+      let newResponses
+      try {
+        newResponses = require(path)
+
+        for (const path of Object.keys(newResponses)) {
+          for (const method of Object.keys(newResponses[path])) {
+            let response = newResponses[path][method]
+            delete newResponses[path][method]
+            newResponses[path][method.toUpperCase()] = response
+          }
+        }
+
+        apiDefaultResponses = newResponses
+
+        if (process.env.VERBOSE === 'true') {
+          console.log(log(`Puppy API: loaded on demand responses from ${process.env.API}`))
+        }
+      } catch (e) {
+        if (process.env.VERBOSE === 'true') {
+          console.log(error(`Puppy API: failed to load on demand responses from ${process.env.API}`))
+          console.error(e)
+        }
+      }
     })
 
   apiApp.use(cors())

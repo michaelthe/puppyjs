@@ -1,5 +1,4 @@
 'use strict'
-const fs = require('fs')
 const path = require('path')
 const chalk = require('chalk')
 const chokidar = require('chokidar')
@@ -13,44 +12,12 @@ const log = chalk.bold.magenta
 const error = chalk.bold.red
 const socket = chalk.bold.greenBright
 
-function _loadOnDemand (path) {
-  delete require.cache[require.resolve(path)]
-
-  let newResponses
-  try {
-    newResponses = require(path)
-
-    wsDefaultResponses = Object
-      .keys(newResponses)
-      .map(key => Object.assign(newResponses[key], {label: key}))
-
-    timeouts.forEach(timeout => clearTimeout(timeout))
-    intervals.forEach(interval => clearInterval(interval))
-
-    timeouts = []
-    intervals = []
-
-    if (process.env.VERBOSE === 'true') {
-      console.log(log(`Puppy WS: ${process.env.WS} loaded. Refresh browser to view changes`))
-    }
-  } catch (e) {
-    if (process.env.VERBOSE === 'true') {
-      console.log(error(`Puppy WS: failed to load default responses from ${process.env.WS}`))
-      console.error(e)
-    }
-  }
-}
-
 function initialize (wsApp, internalApp) {
   const expressUms = expressuws(wsApp) // eslint-disable-line
 
   const wss = expressUms.getWss()
 
   const wsFile = path.resolve(process.cwd(), process.env.WS)
-
-  if (fs.existsSync(wsFile)) {
-    _loadOnDemand(wsFile)
-  }
 
   chokidar
     .watch(wsFile, {usePolling: true})
@@ -63,7 +30,31 @@ function initialize (wsApp, internalApp) {
         console.log(chalk.bold.cyan(`Puppy WS: Changes detected, reloading ${process.env.WS} file`))
       }
 
-      _loadOnDemand(path)
+      delete require.cache[require.resolve(path)]
+
+      let newResponses
+      try {
+        newResponses = require(path)
+
+        wsDefaultResponses = Object
+          .keys(newResponses)
+          .map(key => Object.assign(newResponses[key], {label: key}))
+
+        timeouts.forEach(timeout => clearTimeout(timeout))
+        intervals.forEach(interval => clearInterval(interval))
+
+        timeouts = []
+        intervals = []
+
+        if (process.env.VERBOSE === 'true') {
+          console.log(log(`Puppy WS: ${process.env.WS} loaded. Refresh browser to view changes`))
+        }
+      } catch (e) {
+        if (process.env.VERBOSE === 'true') {
+          console.log(error(`Puppy WS: failed to load default responses from ${process.env.WS}`))
+          console.error(e)
+        }
+      }
     })
 
   wsApp.ws(process.env.WS_URL, ws => {
