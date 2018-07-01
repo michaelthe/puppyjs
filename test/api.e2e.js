@@ -1,3 +1,5 @@
+const helpers = require('./helpers')
+
 describe('api', function () {
   let page
 
@@ -7,6 +9,7 @@ describe('api', function () {
 
   afterEach(async () => {
     await page.close()
+    helpers.resetFiles()
   })
 
   it('should show get request', async () => {
@@ -65,5 +68,16 @@ describe('api', function () {
 
     const getOriginalResponse = await page.evaluate(() => $('.patch').text())
     expect(getOriginalResponse).toContain('hello from a PATCH')
+  })
+
+  it('should get the new response', async () => {
+    helpers.updateAPI({'/api/users': {'GET': {body: 'hello from new GET'}}})
+    await page.waitFor(100)
+
+    await page.reload()
+    await page.waitFor('.get')
+
+    const getResponse = await page.evaluate(() => $('.get').text())
+    expect(getResponse).toContain('hello from new GET')
   })
 })

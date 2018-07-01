@@ -1,3 +1,5 @@
+const helpers = require('./helpers')
+
 describe('api', function () {
   let page
 
@@ -7,6 +9,7 @@ describe('api', function () {
 
   afterEach(async () => {
     await page.close()
+    helpers.resetFiles()
   })
 
   it('should show ws messages', async () => {
@@ -41,5 +44,16 @@ describe('api', function () {
     await page.waitFor(() => [1, 2, 3, 4, 5].map(n => '' + n).includes($('.ws-data').text()))
     msg = await page.evaluate(() => $('.ws-data').text())
     expect([1, 2, 3, 4, 5].map(n => '' + n).includes(msg)).toBeTruthy()
+  })
+
+  it('should receive the new messages', async () => {
+    helpers.updateWS({somemessage: {message: 'some new message'}})
+    await page.waitFor(100)
+
+    await page.reload()
+    await page.waitFor(() => $('.ws-data').text().match(/some new message/i))
+
+    const msg = await page.evaluate(() => $('.ws-data').text())
+    expect(msg.match(/some new message/i)).toBeTruthy()
   })
 })
