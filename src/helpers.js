@@ -16,7 +16,7 @@ async function register (request) {
 async function newPage (url = '') {
   const page = await this.newPage()
 
-  await page.setViewport({width: 1300, height: 1080})
+  await page.setViewport({width: parseInt(process.env.VIEWPORT_WIDTH), height: parseInt(process.env.VIEWPORT_HEIGHT)})
 
   let isURL
   try {

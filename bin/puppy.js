@@ -49,6 +49,14 @@ const puppyConfig = require('../puppy.config.js')
   const INDEX_FILE = arguments['index-file'] || puppyConfig['indexFile']
   const STATIC_DIR = arguments['static-dir'] || puppyConfig['staticDir']
 
+  const DEVTOOLS = arguments['devtools'] || puppyConfig['devtools']
+
+  const WINDOW_WIDTH = puppyConfig['windowWidth']
+  const WINDOW_HEIGHT = puppyConfig['windowHeight']
+
+  const VIEWPORT_WIDTH = puppyConfig['viewportWidth']
+  const VIEWPORT_HEIGHT = puppyConfig['viewportHeight']
+
   console.log(chalk.cyan(logo(arguments.headless)))
 
   let server
@@ -56,6 +64,25 @@ const puppyConfig = require('../puppy.config.js')
   mkdirp.sync(path.join(process.cwd(), '.puppy'))
   if (fs.existsSync(path.join(process.cwd(), '.puppy') + '/internal-port')) {
     INTERNAL_PORT = fs.readFileSync(path.join(process.cwd(), '.puppy') + '/internal-port')
+  }
+
+  let ENV = {
+    WS,
+    API,
+    PORT,
+    WS_PORT,
+    API_PORT,
+    INTERNAL_PORT,
+    VERBOSE,
+    HEADLESS,
+    WS_URL,
+    INDEX_FILE,
+    STATIC_DIR,
+    DEVTOOLS,
+    WINDOW_WIDTH,
+    WINDOW_HEIGHT,
+    VIEWPORT_WIDTH,
+    VIEWPORT_HEIGHT
   }
 
   try {
@@ -85,7 +112,7 @@ const puppyConfig = require('../puppy.config.js')
     const serverOptions = {
       pwd: process.cwd(),
       stdio: 'pipe',
-      env: Object.assign({}, process.env, {WS, API, PORT, WS_PORT, API_PORT, INTERNAL_PORT, VERBOSE, HEADLESS, WS_URL, INDEX_FILE, STATIC_DIR})
+      env: Object.assign({}, process.env, ENV)
     }
 
     server = spawn(`node`, serverArguments, serverOptions)
@@ -102,7 +129,7 @@ const puppyConfig = require('../puppy.config.js')
 
   const jestOptions = {
     stdio: 'pipe',
-    env: Object.assign({}, process.env, {WS, API, PORT, WS_PORT, API_PORT, INTERNAL_PORT, VERBOSE, HEADLESS, WS_URL, INDEX_FILE, STATIC_DIR})
+    env: Object.assign({}, process.env, ENV)
   }
 
   const jest = spawn('jest', jestArguments, jestOptions)
