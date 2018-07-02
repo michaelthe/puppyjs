@@ -5,5 +5,5 @@ module.exports = {
   globalTeardown: path.resolve(__dirname, 'teardown.js'),
   testEnvironment: path.resolve(__dirname, 'puppeteer_environment.js'),
   moduleDirectories: ['node_modules', 'bower_components'],
-  testMatch: ['**/*.e2e.js']
+  testMatch:  [`**/*.${process.env.EXT_PREFIX}.js`]
 }
