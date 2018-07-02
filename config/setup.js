@@ -7,8 +7,8 @@ const puppeteer = require('puppeteer')
 const DIR = path.join(os.tmpdir(), 'jest_puppeteer_global_setup')
 
 module.exports = async function () {
-  const width = 1920
-  const height = 1080
+  const width = process.env.WINDOW_WIDTH
+  const height = process.env.WINDOW_HEIGHT
 
   const browser = await puppeteer.launch({
     headless: process.env.HEADLESS === 'true',
@@ -17,7 +17,7 @@ module.exports = async function () {
       '--disable-setuid-sandbox',
       `--window-size=${width},${height}`,
     ],
-    devtools: process.env.HEADLESS !== 'true'
+    devtools: process.env.HEADLESS !== 'true' && process.env.DEVTOOLS === 'true'
   })
 
   global.__BROWSER__ = browser

@@ -14,4 +14,10 @@ module.exports = {
   wsUrl: '/ws',
   indexFile: 'index.html',
   staticDir: path.resolve(process.cwd(), 'dist'),
+
+  devtools: true,
+  windowWidth: 1920,
+  windowHeight: 1080,
+  viewportWidth: 1300,
+  viewportHeight: 1080
 }
