@@ -61,8 +61,8 @@ Below you can find a sample directory structure. The important thing to notice a
 |   └── fonts
 |
 └── tests
-    ├── users.e2e.js
-    └── notifications.e2e.js
+    ├── users.pup.js
+    └── notifications.pup.js
 ```
 
 #### puppy.api.js
@@ -112,7 +112,7 @@ module.exports = {
 ### Your first End-to-End test
 
 Underneath, Puppy uses Jest for asserting and Puppeteer for executing actions in the browser. Please head to their documentation if you are not familiar.
-In the example below it assumes a file `index.html` inside `src` folder and a file with any name but ends with `.e2e.js` which will hold the test.
+In the example below it assumes a file `index.html` inside `src` folder and a file with any name but ends with `.pup.js` which will hold the test.
 
 ```javascript
 describe('test', () => {

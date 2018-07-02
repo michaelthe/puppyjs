@@ -15,6 +15,8 @@ module.exports = {
   indexFile: 'index.html',
   staticDir: path.resolve(process.cwd(), 'dist'),
 
+  extPrefix: 'pup',
+
   devtools: true,
   windowWidth: 1920,
   windowHeight: 1080,

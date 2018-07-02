@@ -57,6 +57,8 @@ const puppyConfig = require('../puppy.config.js')
   const VIEWPORT_WIDTH = puppyConfig['viewportWidth']
   const VIEWPORT_HEIGHT = puppyConfig['viewportHeight']
 
+  const EXT_PREFIX = arguments['ext-prefix'] || puppyConfig['extPrefix']
+
   console.log(chalk.cyan(logo(arguments.headless)))
 
   let server
@@ -78,6 +80,7 @@ const puppyConfig = require('../puppy.config.js')
     WS_URL,
     INDEX_FILE,
     STATIC_DIR,
+    EXT_PREFIX,
     DEVTOOLS,
     WINDOW_WIDTH,
     WINDOW_HEIGHT,
