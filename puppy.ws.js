@@ -1,7 +1,7 @@
 module.exports = {
   notification: {
-    delay: 500,
-    interval: 2000,
+    delay: 300,
+    interval: 1000,
     message: {
       seen: false,
       date: Date.now(),
@@ -9,14 +9,16 @@ module.exports = {
     }
   },
   randomNumber: {
-    interval: 3000,
+    delay: 600,
+    interval: 1000,
     message: async () => {
-      const items = [12, 3, 52, 23, 55]
-      return items[Math.floor(Math.random() * items.length)]
+      const numbers = [1, 2, 3, 4, 5]
+      return numbers[Math.floor(Math.random() * numbers.length)]
     }
   },
   users: {
-    interval: 3500,
+    delay: 900,
+    interval: 1000,
     message: [
       {name: 'Jane Doe', email: 'jane@gmail.com', age: 44},
       {name: 'John Doe', email: 'john@gmail.com', age: 35}
