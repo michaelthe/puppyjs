@@ -43,7 +43,7 @@ describe('api', function () {
   it('should get the registered response', async () => {
     await page.waitFor('.patch')
 
-    await puppy.register({path: '/api/user', method: 'patch', data: 'updated user'})
+    await puppy.register({path: '/api/user', method: 'patch', body: 'updated user'})
 
     await page.reload()
     await page.waitFor('.patch')
@@ -55,7 +55,7 @@ describe('api', function () {
   it('should get the original response again', async () => {
     await page.waitFor('.patch')
 
-    await puppy.register({path: '/api/user', method: 'patch', data: 'updated user'})
+    await puppy.register({path: '/api/user', method: 'patch', body: 'updated user'})
 
     await page.reload()
     await page.waitFor('.patch')

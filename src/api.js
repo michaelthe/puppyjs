@@ -61,7 +61,7 @@ function initialize (apiApp, internalApp) {
   })
 
   internalApp.post('/register', (req, res) => {
-    let {data, headers, status, path, method} = req.body
+    let {body, headers, status, path, method} = req.body
 
     method = method.toUpperCase() || 'DEFAULT'
 
@@ -72,7 +72,7 @@ function initialize (apiApp, internalApp) {
     apiOnDemandResponses[path] = apiOnDemandResponses[path] || {}
 
     apiOnDemandResponses[path][method] = {
-      body: data || 'OK',
+      body: body || 'OK',
       status: status || 200,
       headers: headers || {}
     }
