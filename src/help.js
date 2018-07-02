@@ -4,23 +4,27 @@ module.exports = () => `
 version ${version}
 puppy argument [options] [test-file]
    arguments
-   t or test:           start servers and run the tests
-   s or serve:          start mock servers only
+   t or test:           Run tests
+   s or serve:          Start mock servers for development
    options
    -h  --help:          show this help
    -v:                  verbose
        --version:       version
-       --inspect:       pass the inspect flag to node
+       --inspect:       start Puppy in Debug mode 
        
-       --ws:            web socket setup file
-       --api:           api setup file
-       --config:        config file
+       --ws:            web socket setup file, defaults to puppy.ws.js
+       --api:           api setup file, defaults to puppy.api.js
+       --config:        config file, defaults to puppy.config.js
        
-       --port:          static server port defaults to 8080
-       --ws-port:       web socket server port defaults to --api-port
-       --api-port:      api server port defaults to --port
+       --port:          static server port, defaults to 8080
+       --api-port:      api server port defaults to PORT
+       --ws-port:       web socket server port, defaults to API PORT
        
-       --ws-url:        web socket endpoint path defaults to /ws
+       --ws-url:        web socket endpoint path, defaults to /ws
        --index-file:    index file defaults to index.html
-       --static-dir:    static files directory default to ./dist
+       --static-dir:    static files directory, defaults to ./dist
+       
+       --ext-prefix:    tests extension prefix, defaults to pup
+       
+       --devtools:      turn on and off devtools when running tests, defaults to TRUE.
 `
