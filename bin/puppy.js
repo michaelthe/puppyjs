@@ -1,8 +1,8 @@
 #! /usr/bin/env node
+
 const fs = require('fs')
 const path = require('path')
 const fetch = require('node-fetch')
-const chalk = require('chalk')
 const spawn = require('child_process').spawn
 const mkdirp = require('mkdirp')
 const minimist = require('minimist')
@@ -11,6 +11,7 @@ const findFreePort = require('find-free-port')
 const logo = require('../src/logo')
 const help = require('../src/help')
 const version = require('../package').version
+const charcoal = require('../src/charcoal')
 const puppyConfig = require('../puppy.config.js')
 
 ;(async () => {
@@ -22,11 +23,11 @@ const puppyConfig = require('../puppy.config.js')
   const arguments = minimist(process.argv.slice(2), {boolean: ['h', 'help', 'version', 'headless']})
 
   if (arguments.version) {
-    return console.log('Version:', version)
+    return charcoal.important('Version:', version)
   }
 
   if (arguments.help || !arguments._.find(arg => ['s', 't', 'serve', 'test'].includes(arg))) {
-    return console.log(help())
+    return charcoal.important(help())
   }
 
   const configFile = path.resolve(process.cwd(), arguments.config || 'puppy.config.js')
@@ -59,7 +60,7 @@ const puppyConfig = require('../puppy.config.js')
 
   const EXT_PREFIX = arguments['ext-prefix'] || puppyConfig['extPrefix']
 
-  console.log(chalk.cyan(logo(arguments.headless)))
+  charcoal.important(logo(arguments.headless))
 
   let server
   let INTERNAL_PORT = 65000
@@ -99,7 +100,7 @@ const puppyConfig = require('../puppy.config.js')
     }
 
     if (arguments._.find(arg => ['s', 'serve'].includes(arg))) {
-      return console.log(chalk.bold.red('Mock servers are running on another process already'))
+      return charcoal.important('Mock servers are running on another process already')
     }
 
   } catch (e) {
@@ -125,7 +126,7 @@ const puppyConfig = require('../puppy.config.js')
   }
 
   if (arguments._.find(arg => ['s', 'serve'].includes(arg))) {
-    return console.log(chalk.bold.cyanBright.bgCyan(`Serving ${process.cwd()}`))
+    return charcoal.important(`Serving ${process.cwd()}`)
   }
 
   const jestArguments = ['--colors', '--runInBand', '--config', jestConfigFile, '--rootDir', process.cwd(), ...arguments._.filter(arg => !['s', 't', 'serve', 'test'].includes(arg))]
