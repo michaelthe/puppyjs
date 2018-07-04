@@ -63,7 +63,7 @@ function initialize (apiApp, internalApp) {
   internalApp.post('/register', (req, res) => {
     let {body, headers, status, path, method} = req.body
 
-    method = method.toUpperCase() || 'DEFAULT'
+    method = method && method.toUpperCase() || 'DEFAULT'
 
     if (process.env.VERBOSE === 'true') {
       console.log(log(`Puppy API: register METHOD %s URL %s`), method, path)
