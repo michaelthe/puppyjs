@@ -3,10 +3,13 @@ module.exports = {
   description: 'A framework agnostic E2E (end-to-end) testing and mocking tool for front end developers.',
 
   themeConfig: {
+    repo: 'michaelthe/puppyjs',
+    editLinks: true,
+    docsDir: 'website',
     nav: [
       {text: 'Home', link: '/'},
       {text: 'Guide', link: '/guide/'},
-      { text: 'Github', link: 'https://github.com/michaelthe/puppyjs' }
+      {text: 'Config Reference', link: '/config/'}
     ],
     sidebar: {
       '/guide/': genSidebarConfig('Guide')
@@ -21,7 +24,8 @@ function genSidebarConfig (title) {
       collapsable: false,
       children: [
         '',
-        'getting-started'
+        'getting-started',
+        'configuration'
       ]
     }
   ]
