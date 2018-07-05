@@ -25,7 +25,8 @@ function genSidebarConfig (title) {
       children: [
         '',
         'getting-started',
-        'configuration'
+        'configuration',
+        'testing'
       ]
     }
   ]
