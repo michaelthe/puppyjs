@@ -127,7 +127,7 @@ module.exports = {
   'simpleReaction': {
     delay: 1000,
     message: 'get-server-list',
-    action: function() {
+    action: () => {
       return 'initialize-server-list';
     }
   }
@@ -142,7 +142,7 @@ module.exports = {
   'payloadReaction': {
     delay: 1000,
     message: 'get-server-list',
-    action: function(data) {
+    action: (data) => {
       return {
         message: 'load-server-list',
         servers: [ 'Server abc1', 'Server abc2', 'Server abc3' ],
@@ -164,14 +164,14 @@ module.exports = {
   'simpleReaction': {
     delay: 1000,
     message: 'get-server-list',
-    action: function() {
+    action: () => {
       return 'initialize-server-list';
     }
   },
   'payloadReaction': {
     delay: 1000,
     message: 'get-server-list',
-    action: function(data) {
+    action: (data) => {
       return {
         message: 'load-server-list',
         servers: [ 'Server abc1', 'Server abc2', 'Server abc3' ],
@@ -266,7 +266,7 @@ The following message submitted by the client:
 can be received and used by the action function:
 
 ```Javascript
-    action: function(data) {
+    action: (data) => {
       return {
         message: 'load-server-list',
         servers: [ 'Server abc1', 'Server abc2', 'Server abc3' ],
