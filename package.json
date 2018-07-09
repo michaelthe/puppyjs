@@ -52,6 +52,6 @@
     "web sockets"
   ],
   "devDependencies": {
-    "vuepress": "^0.10.2"
+    "vuepress": "^0.11.0"
   }
 }
