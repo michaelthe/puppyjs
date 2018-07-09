@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "ncu": "ncu",
+    "docs:dev": "vuepress dev website",
+    "docs:build": "vuepress build website",
     "test": "node bin/puppy.js test --headless --",
     "test-verbose": "node bin/puppy.js test --headless --verbose --",
     "release": "scripts/release.sh"
@@ -48,5 +50,8 @@
     "end-to-end",
     "automation",
     "web sockets"
-  ]
+  ],
+  "devDependencies": {
+    "vuepress": "^0.10.2"
+  }
 }
