@@ -4,7 +4,7 @@ actionText: Get Started →
 actionLink: /guide/
 features:
 - title: Zero configuration
-  details: Build on zero-config premises, get started by only installing PuppyJS on your machine
+  details: Built on zero-config premises, get started by only installing PuppyJS on your machine
 - title: Puppeteer and Jest powered
   details: If you know Puppeteer and Jest then you know 80% of Puppy. Even if you don't its quite easy to get started.
 - title: Simplicity first
