@@ -17,10 +17,10 @@ module.exports = {
 
 If you now run `puppy serve` or `puppy test` the port for the API, WSocket and Static file servers will be `1337` and if you are running tests, the devtools won't be open in the browser window that opens (if you are not running headless).
 
-Consult [config reference]() for a complete breakdown of the configuration options.
+Consult [config reference](../config/) for a complete breakdown of the configuration options.
 
 ::: tip
-The same options can be provided as arguments. E.g. `puppy serve --port 1337 --devtools false`. There are some exceptions which you can consult in  [config reference]()
+The same options can be provided as arguments. E.g. `puppy serve --port 1337 --devtools false`. There are some exceptions which you can consult in  [config reference](../config/)
 :::
 
 ## Puppy API file
