@@ -4,21 +4,31 @@
   // event emmited when connected
   ws.onopen = function () {
     console.log('websocket is connected ...')
-    // sending a send event to websocket server
-    ws.send('connected')
+    setTimeout(() => ws.send('connected'), 1000)
   }
 
   let wsCounter = 0
 
-  $('.test').append('<br><br><div class="ws-count">Responses from WS: ' + wsCounter + '</div>')
-
-  $('.test').append('<br><br><div class="ws-last">Latest response from WS: </div>')
-  // event emmited when receiving message
+  $('.ws-console').append(`<div class="ws-count">Responses from WS: ${wsCounter}</div>`)
+  $('.ws-console').append(`<div class="ws-default"></div>`)
 
   ws.onmessage = function (ev) {
     wsCounter++
-    console.log(ev)
-    $('.ws-count').text('Responses from WS: ' + wsCounter)
-    $('.ws-last').html('Latest response from WS: <span class="ws-data">' + ev.data + '</span>')
+
+    $('.ws-count').text(wsCounter)
+    let message = ev.data
+    try {
+      message = JSON.parse(message)
+    } catch (e) {
+      // message is not json
+    }
+
+    switch (message) {
+      case 'hello friend':
+        $('.ws-console').append(`<div class="ws-connected">${message}</div>`)
+        break
+      default:
+        $('.ws-default').text(JSON.stringify(message))
+    }
   }
 })()

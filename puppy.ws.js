@@ -1,4 +1,10 @@
 module.exports = {
+  connected: {
+    activate: message => {
+      return message === 'connected'
+    },
+    message: 'hello friend'
+  },
   notification: {
     delay: 300,
     interval: 1000,
