@@ -80,7 +80,7 @@ function initialize (apiApp, internalApp) {
     res.send('ok')
   })
 
-  apiApp.all('*', (req, res) => {
+  apiApp.all('*', async (req, res) => {
     if (req.url === '') {
       return
     }
@@ -108,7 +108,28 @@ function initialize (apiApp, internalApp) {
       delete apiOnDemandResponses[req.url]['DEFAULT']
     }
 
-    const body = JSON.stringify(data.body) || 'EMPTY BODY'
+    let body = data.body
+    if (typeof body === 'function') {
+      try {
+        body = await body(req)
+      } catch (err) {
+        const message = `Puppy API: method: ${req.method} url: ${req.url} body function failed to execute`
+
+        console.log(chalk.bold.red(message))
+        console.error(err)
+
+        res.status(500)
+        res.end(message)
+
+        if (process.env.VERBOSE === 'true') {
+          console.warn(error(message))
+        }
+        return
+      }
+    }
+
+    body = JSON.stringify(body) || 'EMPTY BODY'
+
     const status = data.status || 200
     const headers = data.headers || {}
 
