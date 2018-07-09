@@ -3,12 +3,12 @@ home: true
 actionText: Get Started →
 actionLink: /guide/
 features:
-- title: Simplicity First
-  details: Minimal setup with markdown-centered project structure helps you focus on writing.
-- title: Vue-Powered
-  details: Enjoy the dev experience of Vue + webpack, use Vue components in markdown, and develop custom themes with Vue.
-- title: Performant
-  details: VuePress generates pre-rendered static HTML for each page, and runs as an SPA once a page is loaded.
+- title: Zero configuration
+  details: Build on zero-config premises, get started by only installing PuppyJS on your machine
+- title: Puppeteer and Jest powered
+  details: If you know Puppeteer and Jest then you know 80% of Puppy. Even if you don't its quite easy to get started.
+- title: Simplicity first
+  details: Mindset on simple and intuitive interface for mocking HTTP requests and Web socket messages.
 footer: MIT Licensed | Copyright © 2018-present
 ---
 

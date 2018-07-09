@@ -6,6 +6,7 @@ module.exports = {
     repo: 'michaelthe/puppyjs',
     editLinks: true,
     docsDir: 'website',
+    lastUpdated: 'Last Updated',
     nav: [
       {text: 'Home', link: '/'},
       {text: 'Guide', link: '/guide/'},
