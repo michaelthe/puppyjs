@@ -9,25 +9,30 @@ module.exports = {
     nav: [
       {text: 'Home', link: '/'},
       {text: 'Guide', link: '/guide/'},
-      {text: 'Config Reference', link: '/config/'}
+      {text: 'Reference', link: '/config/'},
     ],
     sidebar: {
-      '/guide/': genSidebarConfig('Guide')
-    }
-  }
-}
-
-function genSidebarConfig (title) {
-  return [
-    {
-      title,
-      collapsable: false,
-      children: [
+      '/guide/': genSidebarConfig('Guide', [
         '',
         'getting-started',
         'configuration',
         'testing'
-      ]
+      ]),
+      '/config/': genSidebarConfig('Reference', [
+        '',
+        'api',
+        'sockets'
+      ])
+    }
+  }
+}
+
+function genSidebarConfig (title, children) {
+  return [
+    {
+      title,
+      collapsable: false,
+      children
     }
   ]
 }

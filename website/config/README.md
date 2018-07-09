@@ -1,9 +1,8 @@
 ---
-sidebar: auto
+sidebarDepth: 2
 ---
 
 # Config Reference
-
 
 You can fine-tune Puppy by passing arguments to `puppy serve` and `puppy test`. Below you can find all the options. 
 
