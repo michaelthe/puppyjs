@@ -13,17 +13,26 @@ let apiApp
 let staticApp = express()
 let internalApp = express()
 
+staticApp.use(cors())
 internalApp.use(cors())
+
+staticApp.use(bodyParser.json({strict: false}))
 internalApp.use(bodyParser.json({strict: false}))
 
 internalApp.get('/status', (req, res) => res.end('ok'))
 
 if (process.env.API_PORT !== process.env.PORT) {
   apiApp = express()
+
+  apiApp.use(cors())
+  apiApp.use(bodyParser.json({strict: false}))
 }
 
 if (process.env.WS_PORT !== process.env.API_PORT) {
   wsApp = express()
+
+  wsApp.use(cors())
+  wsApp.use(bodyParser.json({strict: false}))
 }
 
 staticApp.use(express.static(process.env.STATIC_DIR))
