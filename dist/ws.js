@@ -12,7 +12,7 @@
   $('.ws-console').append(`<div class="ws-count">Responses from WS: ${wsCounter}</div>`)
   $('.ws-console').append(`<div class="ws-default"></div>`)
 
-  ws.onmessage = function (ev) {
+  ws.onmessage = ev => {
     wsCounter++
 
     $('.ws-count').text(wsCounter)
@@ -25,6 +25,7 @@
 
     switch (message) {
       case 'hello friend':
+        $('.ws-connected').remove()
         $('.ws-console').append(`<div class="ws-connected">${message}</div>`)
         break
       default:

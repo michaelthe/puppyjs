@@ -1,12 +1,10 @@
 'use strict'
 const path = require('path')
 const cors = require('cors')
-const chalk = require('chalk')
 const chokidar = require('chokidar')
 const bodyParser = require('body-parser')
 
-const log = chalk.bold.magenta
-const error = chalk.bold.red
+const charcoal = require('./charcoal')
 
 let apiDefaultResponses = {}
 let apiOnDemandResponses = {}
@@ -21,9 +19,7 @@ function initialize (apiApp, internalApp) {
         return
       }
 
-      if (process.env.VERBOSE === 'true' && event === 'change') {
-        console.log(chalk.bold.cyan(`Puppy API: Changes detected, reloading ${process.env.API} file`))
-      }
+      charcoal.log('api', `Changes detected, reloading ${process.env.API} file`)
 
       delete require.cache[require.resolve(path)]
 
@@ -40,15 +36,10 @@ function initialize (apiApp, internalApp) {
         }
 
         apiDefaultResponses = newResponses
-
-        if (process.env.VERBOSE === 'true') {
-          console.log(log(`Puppy API: loaded on demand responses from ${process.env.API}`))
-        }
+        charcoal.log('api', `Loaded on demand responses from ${process.env.API}`)
       } catch (e) {
-        if (process.env.VERBOSE === 'true') {
-          console.log(error(`Puppy API: failed to load on demand responses from ${process.env.API}`))
-          console.error(e)
-        }
+        charcoal.error('api', `Failed to load on demand responses from ${process.env.API}`)
+        charcoal.error(e)
       }
     })
 
@@ -65,9 +56,7 @@ function initialize (apiApp, internalApp) {
 
     method = method && method.toUpperCase() || 'DEFAULT'
 
-    if (process.env.VERBOSE === 'true') {
-      console.log(log(`Puppy API: register METHOD %s URL %s`), method, path)
-    }
+    charcoal.log('api', `Register METHOD ${method} URL ${path}`)
 
     apiOnDemandResponses[path] = apiOnDemandResponses[path] || {}
 
@@ -89,19 +78,15 @@ function initialize (apiApp, internalApp) {
       || apiDefaultResponses[req.url] && (apiDefaultResponses[req.url][req.method] || apiDefaultResponses[req.url]['DEFAULT'])
 
     if (!data) {
-      const message = `Puppy API: method: ${req.method} url: ${req.url} is not supported, please update your API definition`
+      const message = `Method: ${req.method} url: ${req.url} is not supported, please update your API definition`
 
       res.status(404)
       res.end(message)
-      if (process.env.VERBOSE === 'true') {
-        console.warn(error(message))
-      }
-      return
+
+      return charcoal.error('api', message)
     }
 
-    if (process.env.VERBOSE === 'true') {
-      console.log(`Puppy API: method: ${req.method} url: ${req.url}`)
-    }
+    charcoal.log('api', `Method: ${req.method} url: ${req.url}`)
 
     if (apiOnDemandResponses[req.url]) {
       delete apiOnDemandResponses[req.url][req.method]
