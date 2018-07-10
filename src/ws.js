@@ -21,7 +21,7 @@ function initialize (wsApp, internalApp) {
         return
       }
 
-      charcoal.log(`Puppy WS: Changes detected, reloading ${process.env.WS} file`)
+      charcoal.log('ws', `Changes detected, reloading ${process.env.WS} file`)
 
       delete require.cache[require.resolve(path)]
 
@@ -32,22 +32,22 @@ function initialize (wsApp, internalApp) {
           .keys(newResponses)
           .map(key => Object.assign(newResponses[key], {label: key}))
 
-        charcoal.debug(`Puppy WS: ${process.env.WS} loaded. Refresh browser to view changes`)
+        charcoal.log('ws', `${process.env.WS} loaded. Refresh browser to view changes`)
       } catch (e) {
-        charcoal.error(`Puppy WS: failed to load default responses from ${process.env.WS}`)
+        charcoal.error('ws', `Failed to load default responses from ${process.env.WS}`)
         charcoal.error(e)
       }
     })
 
   wsApp.ws(process.env.WS_URL, ws => {
-    charcoal.debug('Puppy WS: Client connected')
+    charcoal.log('ws', 'Client connected')
 
     wsEvents
       .filter(event => event.activate === undefined)
       .forEach(event => handleEvent(ws, event))
 
     ws.on('message', message => {
-      charcoal.debug(`Puppy WS: Received message: ${message}`)
+      charcoal.log('ws', `Received message: ${message}`)
 
       wsEvents
         .filter(event => typeof event.activate === 'function' && event.activate(message))
@@ -70,7 +70,7 @@ async function handleEvent (ws, event, clientMessage) {
     try {
       message = await event.message(clientMessage)
     } catch (err) {
-      charcoal.error('Puppy WS: Something went wrong while executing the function')
+      charcoal.error('ws', 'Something went wrong while executing the function')
       charcoal.error(err)
       return
     }
@@ -92,12 +92,10 @@ async function handleEvent (ws, event, clientMessage) {
 
 async function sendMessage (ws, message, interval) {
   if (ws.readyState !== 1) {
-    charcoal.debug('Puppy WS: Clearing previous timeout and interval for event due to socket disconnection')
-
     return interval && clearInterval(interval)
   }
 
-  charcoal.debug(JSON.stringify(message))
+  charcoal.log('ws', JSON.stringify(message))
   ws.send(JSON.stringify(message))
 }
 

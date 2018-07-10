@@ -19,7 +19,7 @@ function initialize (apiApp, internalApp) {
         return
       }
 
-      charcoal.log(`Puppy API: Changes detected, reloading ${process.env.API} file`)
+      charcoal.log('api', `Changes detected, reloading ${process.env.API} file`)
 
       delete require.cache[require.resolve(path)]
 
@@ -36,9 +36,9 @@ function initialize (apiApp, internalApp) {
         }
 
         apiDefaultResponses = newResponses
-        charcoal.debug(`Puppy API: loaded on demand responses from ${process.env.API}`)
+        charcoal.log('api', `Loaded on demand responses from ${process.env.API}`)
       } catch (e) {
-        charcoal.error(`Puppy API: failed to load on demand responses from ${process.env.API}`)
+        charcoal.error('api', `Failed to load on demand responses from ${process.env.API}`)
         charcoal.error(e)
       }
     })
@@ -56,7 +56,7 @@ function initialize (apiApp, internalApp) {
 
     method = method && method.toUpperCase() || 'DEFAULT'
 
-    charcoal.debug(`Puppy API: register METHOD ${method} URL ${path}`)
+    charcoal.log('api', `Register METHOD ${method} URL ${path}`)
 
     apiOnDemandResponses[path] = apiOnDemandResponses[path] || {}
 
@@ -78,15 +78,15 @@ function initialize (apiApp, internalApp) {
       || apiDefaultResponses[req.url] && (apiDefaultResponses[req.url][req.method] || apiDefaultResponses[req.url]['DEFAULT'])
 
     if (!data) {
-      const message = `Puppy API: method: ${req.method} url: ${req.url} is not supported, please update your API definition`
+      const message = `Method: ${req.method} url: ${req.url} is not supported, please update your API definition`
 
       res.status(404)
       res.end(message)
 
-      return charcoal.error(message)
+      return charcoal.error('api', message)
     }
 
-    charcoal.debug(`Puppy API: method: ${req.method} url: ${req.url}`)
+    charcoal.log('api', `Method: ${req.method} url: ${req.url}`)
 
     if (apiOnDemandResponses[req.url]) {
       delete apiOnDemandResponses[req.url][req.method]

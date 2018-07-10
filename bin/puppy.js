@@ -23,11 +23,11 @@ const puppyConfig = require('../puppy.config.js')
   const arguments = minimist(process.argv.slice(2), {boolean: ['h', 'help', 'version', 'headless']})
 
   if (arguments.version) {
-    return charcoal.important('Version:', version)
+    return charcoal.info('Version:', version)
   }
 
   if (arguments.help || !arguments._.find(arg => ['s', 't', 'serve', 'test'].includes(arg))) {
-    return charcoal.important(help())
+    return charcoal.info(help())
   }
 
   const configFile = path.resolve(process.cwd(), arguments.config || 'puppy.config.js')
@@ -60,7 +60,7 @@ const puppyConfig = require('../puppy.config.js')
 
   const EXT_PREFIX = arguments['ext-prefix'] || puppyConfig['extPrefix']
 
-  charcoal.important(logo(arguments.headless))
+  charcoal.info(logo(arguments.headless))
 
   let server
   let INTERNAL_PORT = 65000
@@ -100,7 +100,7 @@ const puppyConfig = require('../puppy.config.js')
     }
 
     if (arguments._.find(arg => ['s', 'serve'].includes(arg))) {
-      return charcoal.important('Mock servers are running on another process already')
+      return charcoal.info('Mock servers are running on another process already')
     }
 
   } catch (e) {
@@ -126,7 +126,7 @@ const puppyConfig = require('../puppy.config.js')
   }
 
   if (arguments._.find(arg => ['s', 'serve'].includes(arg))) {
-    return charcoal.important(`Serving ${process.cwd()}`)
+    return charcoal.info(`Serving ${process.cwd()}`)
   }
 
   const jestArguments = ['--colors', '--runInBand', '--config', jestConfigFile, '--rootDir', process.cwd(), ...arguments._.filter(arg => !['s', 't', 'serve', 'test'].includes(arg))]
