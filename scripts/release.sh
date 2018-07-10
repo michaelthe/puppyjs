@@ -16,7 +16,6 @@ release() {
         return
     fi
 
-    return
     echo 'patch version'
     npm version patch
 
