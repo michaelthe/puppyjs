@@ -6,13 +6,13 @@ release() {
         return
     fi
 
-    if [[ "$(git branch)" -ne "master" ]]; then
+    if [[ "$(git rev-parse --abbrev-ref HEAD)" != "master" ]]; then
         echo "Aborting... you are not on master branch"
         return
     fi
 
-    if [ "$(git rev-parse @)" -ne "$(git rev-parse \"${1:-'@{u}'}\")" -a "$(git rev-parse @)" -eq "$(git merge-base @ \"${1:-'@{u}'}\")" ]; then
-        echo "Aborting... local is behind remote"
+    if [[ "$(git rev-parse HEAD)" != "$(git rev-parse @{u})" ]]; then
+        echo "Aborting... local is out of sync"
         return
     fi
 
