@@ -5,7 +5,7 @@ title: Testing
 # Testing
 
 Puppy was built to work with zero-config (see default config values above), so for testing you only need to run `puppy test` command. 
-Puppy will search for files ending in `.e2e.js` and run the tests so bear that in mind if you save your test files in `.spec.js`. 
+Puppy will search for files ending in `.pup.js` and run the tests so bear that in mind if you save your test files in `.spec.js`. 
 
 ## Puppy Global Object
 
