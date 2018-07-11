@@ -43,9 +43,6 @@ function initialize (apiApp, internalApp) {
       }
     })
 
-  apiApp.use(cors())
-  apiApp.use(bodyParser.json())
-
   internalApp.post('/flush', (req, res) => {
     apiOnDemandResponses = {}
     res.send('ok')
