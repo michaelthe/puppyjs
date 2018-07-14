@@ -29,11 +29,11 @@ module.exports = {
 }
 
 function genSidebarConfig (title, children) {
-  return [
-    {
-      title,
-      collapsable: false,
-      children
-    }
-  ]
+  const collapsable = false
+
+  return [{
+    title,
+    children,
+    collapsable,
+  }]
 }
