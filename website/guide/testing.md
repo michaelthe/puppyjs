@@ -9,7 +9,8 @@ Puppy will search for files ending in `.pup.js` and run the tests so bear that i
 
 ## Puppy Global Object
 
-Puppy by default gives you access to the **puppy** global object _which also wraps puppeteer_ . In the example below you can observe the minimum setup for launching a test
+Puppy by default gives you access to the **puppy** global object _which also wraps puppeteer_ . 
+In the example below you can observe the minimum setup for launching a test
 
 ```javascript
 describe('test', () => {
@@ -25,14 +26,12 @@ describe('test', () => {
 As you can observe the only line of code needed to get a page reference is `page = await puppy.newPage()`
 
 * newPage
-
-    * when no arguments are passed corresponds to `http://localhost:${PORT}` and assumes an `index.html` file in current working directory to be used as an entry point.
+    * puppy by default serves static files from ./dist folder
+    * when no arguments are passed puppy assumes `http://localhost:8080/index.html`.
     * the only argument supported at the moment is the url or path. 
-    
-    For example if your `index.html` file is under a `src` folder then you would use `page = await puppy.newPage('/src/[filename].html')`. **Note** The first `/` is optional.
-    
-    You can also provide a full url e.g `page = await puppy.newPage('http://www.google.com')`. **Note** that `http(s)` is required in front of the url.
-    
+        * path `await puppy.newPage('/users/john')`. **Note** The first `/` is optional.
+        * url `await puppy.newPage('http://www.google.com')`. **Note** that `http(s)` is required in front of the url.
+        
 ## Access to the BROWSER object
 
 You can get to the BROWSER object as exposed by Puppeteer using `puppy.browser`.

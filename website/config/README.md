@@ -20,7 +20,7 @@ puppy serve --port 8080
 
 ::: warning
 Please note that the options below are in **camelCase** whereas command-line arguments are passed in using **kebab-case**.
-In the config file snapshot below, what you see there are the `default` values. 
+In the config file snapshot below you can see the `default` values. 
 :::
 
 ```javascript
