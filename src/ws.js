@@ -46,12 +46,16 @@ function initialize (wsApp, internalApp) {
       .filter(event => event.activate === undefined)
       .forEach(event => handleEvent(ws, event))
 
-    ws.on('message', message => {
+    ws.on('message', async message => {
       charcoal.log('ws', `Received message: ${message}`)
 
-      wsEvents
-        .filter(event => typeof event.activate === 'function' && event.activate(message))
-        .forEach(event => handleEvent(ws, event, message))
+      const events = wsEvents.filter(event => typeof event.activate === 'function')
+
+      for (const event of events) {
+        if (await event.activate(message)) {
+          await handleEvent(ws, event, message)
+        }
+      }
     })
   })
 

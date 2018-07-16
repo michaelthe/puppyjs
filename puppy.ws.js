@@ -1,8 +1,6 @@
 module.exports = {
   connected: {
-    activate: message => {
-      return message === 'connected'
-    },
+    activate: async message => message === 'connected',
     message: 'hello friend'
   },
   notification: {
