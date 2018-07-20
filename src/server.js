@@ -1,6 +1,7 @@
 'use strict'
 
 const cors = require('cors')
+const path = require('path')
 const express = require('express')
 const bodyParser = require('body-parser')
 
@@ -39,6 +40,10 @@ staticApp.use(express.static(process.env.STATIC_DIR))
 
 ws(wsApp || apiApp || staticApp, internalApp)
 api(apiApp || staticApp, internalApp)
+
+staticApp.get('*', (req, res) => {
+  res.sendFile(path.resolve(process.env.STATIC_DIR, process.env.INDEX_FILE))
+})
 
 internalApp
   .listen(process.env.INTERNAL_PORT, () => {

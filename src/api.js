@@ -66,7 +66,7 @@ function initialize (apiApp, internalApp) {
     res.send('ok')
   })
 
-  apiApp.all('*', async (req, res) => {
+  apiApp.all('*', async (req, res, next) => {
     if (req.url === '') {
       return
     }
@@ -77,10 +77,9 @@ function initialize (apiApp, internalApp) {
     if (!data) {
       const message = `Method: ${req.method} url: ${req.url} is not supported, please update your API definition`
 
-      res.status(404)
-      res.end(message)
+      charcoal.error('api', message)
 
-      return charcoal.error('api', message)
+      return next()
     }
 
     charcoal.log('api', `Method: ${req.method} url: ${req.url}`)
@@ -115,7 +114,8 @@ function initialize (apiApp, internalApp) {
     const status = data.status || 200
     const headers = data.headers || {}
 
-    Object.keys(headers).forEach(key => res.setHeader(key, headers[key]))
+    Object.keys(headers)
+      .forEach(key => res.setHeader(key, headers[key]))
 
     res.status(status)
 
