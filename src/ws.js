@@ -9,7 +9,6 @@ let wsEvents = {}
 
 function initialize (wsApp, internalApp) {
   const expressUms = expressuws(wsApp) // eslint-disable-line
-
   const wss = expressUms.getWss()
 
   const wsFile = path.resolve(process.cwd(), process.env.WS)

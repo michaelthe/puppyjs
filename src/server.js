@@ -3,6 +3,7 @@
 const cors = require('cors')
 const path = require('path')
 const express = require('express')
+const livecable = require('livecable')
 const bodyParser = require('body-parser')
 
 const ws = require('./ws')
@@ -36,10 +37,11 @@ if (process.env.WS_PORT !== process.env.API_PORT) {
   wsApp.use(bodyParser.json({strict: false}))
 }
 
-staticApp.use(express.static(process.env.STATIC_DIR))
-
 ws(wsApp || apiApp || staticApp, internalApp)
 api(apiApp || staticApp, internalApp)
+
+// this needs to be defined after ws()
+livecable(staticApp, process.env.STATIC_DIR)
 
 staticApp.get('*', (req, res) => {
   res.sendFile(path.resolve(process.env.STATIC_DIR, process.env.INDEX_FILE))

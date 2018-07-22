@@ -32,4 +32,8 @@
         $('.ws-default').text(JSON.stringify(message))
     }
   }
+
+  ws.onclose = ev => {
+    console.log('SOCKET [/ws] closing...')
+  }
 })()
