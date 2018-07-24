@@ -41,10 +41,9 @@ ws(wsApp || apiApp || staticApp, internalApp)
 api(apiApp || staticApp, internalApp)
 
 // this needs to be defined after ws()
-livecable(staticApp, process.env.STATIC_DIR)
-
-staticApp.get('*', (req, res) => {
-  res.sendFile(path.resolve(process.env.STATIC_DIR, process.env.INDEX_FILE))
+livecable(staticApp, {
+  pathToWatch: process.env.STATIC_DIR,
+  SPA: true
 })
 
 internalApp

@@ -34,7 +34,7 @@
     "figlet": "^1.2.0",
     "find-free-port": "^1.2.0",
     "jest": "^23.1.0",
-    "livecable": "0.0.6",
+    "livecable": "0.0.12",
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
     "node-fetch": "^2.1.2",
