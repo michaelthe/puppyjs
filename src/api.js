@@ -7,7 +7,7 @@ const charcoal = require('./charcoal')
 let apiDefaultResponses = {}
 let apiOnDemandResponses = {}
 
-function initialize(apiApp, internalApp) {
+function initialize (apiApp, internalApp) {
   let apiFile = path.resolve(process.cwd(), process.env.API)
 
   chokidar

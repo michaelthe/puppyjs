@@ -15,7 +15,7 @@ module.exports = async function () {
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
-      `--window-size=${width},${height}`,
+      `--window-size=${width},${height}`
     ],
     devtools: process.env.HEADLESS !== 'true' && process.env.DEVTOOLS === 'true'
   })

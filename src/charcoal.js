@@ -53,4 +53,4 @@ function error (location, ...args) {
   }
 }
 
-module.exports = {error, info, log}
+module.exports = { error, info, log }

@@ -2,21 +2,21 @@ const URL = require('url').URL
 const http = require('http')
 
 async function emit (message) {
-  return await _post('/emit', message)
+  return _post('/emit', message)
 }
 
 async function flush () {
-  return await _post('/flush', '')
+  return _post('/flush', '')
 }
 
 async function register (request) {
-  return await _post('/register', request)
+  return _post('/register', request)
 }
 
 async function newPage (url = '') {
   const page = await this.newPage()
 
-  await page.setViewport({width: parseInt(process.env.VIEWPORT_WIDTH), height: parseInt(process.env.VIEWPORT_HEIGHT)})
+  await page.setViewport({ width: parseInt(process.env.VIEWPORT_WIDTH), height: parseInt(process.env.VIEWPORT_HEIGHT) })
 
   let isURL
   try {
@@ -58,7 +58,7 @@ async function _post (path, data) {
 
       resStream.setEncoding('utf8')
       resStream.on('error', error => reject(error))
-      resStream.on('data', chunk => response += chunk)
+      resStream.on('data', chunk => { response += chunk })
       resStream.on('end', () => resolve(response))
     })
 
@@ -70,4 +70,4 @@ async function _post (path, data) {
   })
 }
 
-module.exports = {emit, flush, register, newPage}
+module.exports = { emit, flush, register, newPage }
