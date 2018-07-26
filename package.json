@@ -40,6 +40,14 @@
     "puppeteer": "^1.6.1",
     "rimraf": "^2.6.2"
   },
+  "devDependencies": {
+    "vuepress": "^0.12.0"
+  },
+  "standard": {
+    "globals": [
+      "$"
+    ]
+  },
   "keywords": [
     "api",
     "e2e",
@@ -50,8 +58,5 @@
     "end-to-end",
     "automation",
     "web sockets"
-  ],
-  "devDependencies": {
-    "vuepress": "^0.12.0"
-  }
+  ]
 }

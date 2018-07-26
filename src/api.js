@@ -1,19 +1,17 @@
 'use strict'
 const path = require('path')
-const cors = require('cors')
 const chokidar = require('chokidar')
-const bodyParser = require('body-parser')
 
 const charcoal = require('./charcoal')
 
 let apiDefaultResponses = {}
 let apiOnDemandResponses = {}
 
-function initialize (apiApp, internalApp) {
+function initialize(apiApp, internalApp) {
   let apiFile = path.resolve(process.cwd(), process.env.API)
 
   chokidar
-    .watch(apiFile, {usePolling: true})
+    .watch(apiFile, { usePolling: true })
     .on('all', (event, path) => {
       if (event !== 'add' && event !== 'change') {
         return
@@ -49,9 +47,9 @@ function initialize (apiApp, internalApp) {
   })
 
   internalApp.post('/register', (req, res) => {
-    let {body, headers, status, path, method} = req.body
+    let { body, headers, status, path, method } = req.body
 
-    method = method && method.toUpperCase() || 'DEFAULT'
+    method = (method || 'DEFAULT').toUpperCase()
 
     charcoal.log('api', `Register METHOD ${method} URL ${path}`)
 
@@ -71,8 +69,8 @@ function initialize (apiApp, internalApp) {
       return
     }
 
-    const data = apiOnDemandResponses[req.url] && (apiOnDemandResponses[req.url][req.method] || apiOnDemandResponses[req.url]['DEFAULT'])
-      || apiDefaultResponses[req.url] && (apiDefaultResponses[req.url][req.method] || apiDefaultResponses[req.url]['DEFAULT'])
+    const data = (apiOnDemandResponses[req.url] && (apiOnDemandResponses[req.url][req.method] || apiOnDemandResponses[req.url]['DEFAULT'])) ||
+      (apiDefaultResponses[req.url] && (apiDefaultResponses[req.url][req.method] || apiDefaultResponses[req.url]['DEFAULT']))
 
     if (!data) {
       const message = `Method: ${req.method} url: ${req.url} is not supported, please update your API definition`
@@ -96,16 +94,11 @@ function initialize (apiApp, internalApp) {
       } catch (err) {
         const message = `Puppy API: method: ${req.method} url: ${req.url} body function failed to execute`
 
-        console.log(chalk.bold.red(message))
-        console.error(err)
+        charcoal.log('api', message)
+        charcoal.error('api', err)
 
         res.status(500)
-        res.end(message)
-
-        if (process.env.VERBOSE === 'true') {
-          console.warn(error(message))
-        }
-        return
+        return res.end(message)
       }
     }
 
@@ -114,8 +107,7 @@ function initialize (apiApp, internalApp) {
     const status = data.status || 200
     const headers = data.headers || {}
 
-    Object.keys(headers)
-      .forEach(key => res.setHeader(key, headers[key]))
+    Object.keys(headers).forEach(key => res.setHeader(key, headers[key]))
 
     res.status(status)
 

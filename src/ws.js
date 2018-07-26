@@ -15,7 +15,7 @@ function initialize (wsApp, internalApp) {
   const wsFile = path.resolve(process.cwd(), process.env.WS)
 
   chokidar
-    .watch(wsFile, {usePolling: true})
+    .watch(wsFile, { usePolling: true })
     .on('all', (event, path) => {
       if (event !== 'add' && event !== 'change') {
         return
@@ -30,7 +30,7 @@ function initialize (wsApp, internalApp) {
 
         wsEvents = Object
           .keys(newResponses)
-          .map(key => Object.assign(newResponses[key], {label: key}))
+          .map(key => Object.assign(newResponses[key], { label: key }))
 
         charcoal.log('ws', `${process.env.WS} loaded. Refresh browser to view changes`)
       } catch (e) {
