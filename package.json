@@ -4,7 +4,6 @@
   "description": "puppeteer + jest + awesome-code = puppyjs",
   "main": "index.js",
   "scripts": {
-    "ncu": "ncu",
     "standard": "standard",
     "docs:dev": "vuepress dev website",
     "docs:build": "vuepress build website",
@@ -42,7 +41,6 @@
     "rimraf": "^2.6.2"
   },
   "devDependencies": {
-    "npm-check-updates": "^2.14.2",
     "standard": "^11.0.1",
     "vuepress": "^0.12.0"
   },
