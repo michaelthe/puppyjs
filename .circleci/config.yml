@@ -24,6 +24,10 @@ jobs:
           name: Running tests
           command: npm test --headless
 
+      - run:
+          name: Running standard
+          command: npm run standard
+
   publish:
     working_directory: ~/repo
     docker:
