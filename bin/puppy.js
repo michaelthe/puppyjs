@@ -128,7 +128,7 @@ const puppyConfig = require('../puppy.config.js')
     return charcoal.info(`Serving ${process.cwd()}`)
   }
 
-  const jestArguments = ['--colors', '--runInBand', '--config', jestConfigFile, '--rootDir', process.cwd(), ...arguments._.filter(arg => !['s', 't', 'serve', 'test'].includes(arg))]
+  const jestArguments = ['--colors', '--runInBand', '--config', jestConfigFile, '--rootDir', process.cwd(), ...args._.filter(arg => !['s', 't', 'serve', 'test'].includes(arg))]
 
   const jestOptions = {
     stdio: 'pipe',
