@@ -125,7 +125,7 @@ describe('test', () => {
       
       expect(...) // Jest
   })
-}
+})
 ``` 
 
 To run this use the command
