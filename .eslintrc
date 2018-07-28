@@ -1,0 +1,15 @@
+{
+  "extends": "standard",
+  "env": {
+    "jest": true,
+    "node": true,
+    "jquery": true,
+    "browser": true
+  },
+  "globals": {
+    "puppy": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2018
+  }
+}

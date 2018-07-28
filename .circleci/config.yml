@@ -22,8 +22,8 @@ jobs:
           command: npm test --headless
 
       - run:
-          name: Running standard
-          command: npm run standard
+          name: Running eslint standard style
+          command: npm run eslint
 
       - save_cache:
           key: node_modules-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
