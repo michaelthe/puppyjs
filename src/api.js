@@ -109,7 +109,7 @@ function initialize (apiApp, internalApp) {
       }
     }
 
-    body = JSON.stringify(body) || 'EMPTY BODY'
+    body = JSON.stringify(body)
 
     const status = data.status || 200
     const headers = data.headers || {}
