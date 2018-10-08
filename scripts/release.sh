@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-release() {
+main() {
     if [[ -n "$(git status --porcelain)" ]]; then
         echo "Aborting... directory is not clean"
         return
@@ -26,6 +26,6 @@ release() {
     git push --tags
 }
 
-dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-cd ${dir}/..
-release
+cd "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"/..
+main
+cd -

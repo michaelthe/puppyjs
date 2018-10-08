@@ -34,4 +34,4 @@ function _writeFile (file, backupFile, exports) {
   fs.writeFileSync(file, `module.exports = ${JSON.stringify(exports)}`)
 }
 
-module.exports = {updateWS, updateAPI, resetFiles}
+module.exports = { updateWS, updateAPI, resetFiles }

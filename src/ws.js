@@ -3,7 +3,7 @@ const path = require('path')
 const chokidar = require('chokidar')
 const expressuws = require('express-ws')
 
-const charcoal = require('./charcoal')
+const charcoal = require('./libs/charcoal.js')
 
 let wsEvents = {}
 

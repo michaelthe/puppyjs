@@ -1,7 +1,7 @@
 const fs = require('fs')
 const os = require('os')
 const path = require('path')
-const helpers = require('../src/helpers.js')
+const helpers = require('../src/libs/helpers.js')
 const puppeteer = require('puppeteer')
 const NodeEnvironment = require('jest-environment-node')
 

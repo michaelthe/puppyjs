@@ -24,8 +24,8 @@ module.exports = {
     delay: 900,
     interval: 1000,
     message: [
-      {name: 'Jane Doe', email: 'jane@gmail.com', age: 44},
-      {name: 'John Doe', email: 'john@gmail.com', age: 35}
+      { name: 'Jane Doe', email: 'jane@gmail.com', age: 44 },
+      { name: 'John Doe', email: 'john@gmail.com', age: 35 }
     ]
   }
 }

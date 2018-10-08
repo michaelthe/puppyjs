@@ -57,9 +57,13 @@ async function _post (path, data) {
       let response = ''
 
       resStream.setEncoding('utf8')
-      resStream.on('error', error => reject(error))
-      resStream.on('data', chunk => { response += chunk })
+
+      resStream.on('data', chunk => {
+        response += chunk
+      })
+
       resStream.on('end', () => resolve(response))
+      resStream.on('error', error => reject(error))
     })
 
     post.on('error', error => reject(error))

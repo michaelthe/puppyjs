@@ -1,7 +1,4 @@
-const version = require('../package').version
-
-module.exports = () => `
-version ${version}
+version {version}
 puppy argument [options] [test-file]
    arguments
    t or test:           Run tests
@@ -27,4 +24,3 @@ puppy argument [options] [test-file]
        --ext-prefix:    tests extension prefix, defaults to pup
        
        --devtools:      turn on and off devtools when running tests, defaults to TRUE.
-`

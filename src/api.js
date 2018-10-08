@@ -1,8 +1,7 @@
 'use strict'
 const path = require('path')
 const chokidar = require('chokidar')
-
-const charcoal = require('./charcoal')
+const charcoal = require('./libs/charcoal')
 
 let apiDefaultResponses = {}
 let apiOnDemandResponses = {}
@@ -98,11 +97,12 @@ function initialize (apiApp, internalApp) {
         charcoal.error('api', err)
 
         res.status(500)
-        return res.end(message)
+        res.end(message)
+        return
       }
     }
 
-    body = JSON.stringify(body) || 'EMPTY BODY'
+    body = JSON.stringify(body)
 
     const status = data.status || 200
     const headers = data.headers || {}

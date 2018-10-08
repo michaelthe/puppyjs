@@ -8,8 +8,8 @@ const mkdirp = require('mkdirp')
 const minimist = require('minimist')
 const findFreePort = require('find-free-port')
 
-const logo = require('../src/logo')
-const help = require('../src/help')
+const logo = require('../src/logo/logo')
+const help = require('../src/help/help')
 const version = require('../package').version
 const charcoal = require('../src/charcoal')
 const puppyConfig = require('../puppy.config.js')
@@ -20,7 +20,7 @@ const puppyConfig = require('../puppy.config.js')
   const jestConfigFile = path.resolve(__dirname, '..', 'config/jest.config.js')
 
   // args
-  const args = minimist(process.argv.slice(2), {boolean: ['h', 'help', 'version', 'headless']})
+  const args = minimist(process.argv.slice(2), { boolean: ['h', 'help', 'version', 'headless'] })
 
   if (args.version) {
     return charcoal.info('Version:', version)
@@ -38,10 +38,11 @@ const puppyConfig = require('../puppy.config.js')
 
   const WS = args['ws'] || puppyConfig['ws']
   const API = args['api'] || puppyConfig['api']
+  const EXT_PREFIX = args['ext-prefix'] || puppyConfig['extPrefix']
 
   const PORT = args['port'] || puppyConfig['port']
-  const WS_PORT = args['ws-port'] || args['api-port'] || args['port'] || puppyConfig['wsApi'] || puppyConfig['apiPort'] || puppyConfig['port']
-  const API_PORT = args['api-port'] || args['port'] || puppyConfig['apiPort'] || puppyConfig['port']
+  const WS_PORT = args['ws-port'] || args['api-port'] || args['port'] || puppyConfig['wsPort']
+  const API_PORT = args['api-port'] || args['port'] || puppyConfig['apiPort']
 
   const VERBOSE = args['verbose'] || puppyConfig['verbose'] || false
   const HEADLESS = args['headless'] || puppyConfig['headless'] || false
@@ -58,8 +59,6 @@ const puppyConfig = require('../puppy.config.js')
   const VIEWPORT_WIDTH = puppyConfig['viewportWidth']
   const VIEWPORT_HEIGHT = puppyConfig['viewportHeight']
 
-  const EXT_PREFIX = args['ext-prefix'] || puppyConfig['extPrefix']
-
   charcoal.info(logo(args.headless))
 
   let server
@@ -72,16 +71,20 @@ const puppyConfig = require('../puppy.config.js')
   let ENV = {
     WS,
     API,
+    EXT_PREFIX,
+
     PORT,
     WS_PORT,
     API_PORT,
     INTERNAL_PORT,
+
     VERBOSE,
     HEADLESS,
+
     WS_URL,
     INDEX_FILE,
     STATIC_DIR,
-    EXT_PREFIX,
+
     DEVTOOLS,
     WINDOW_WIDTH,
     WINDOW_HEIGHT,
@@ -132,7 +135,7 @@ const puppyConfig = require('../puppy.config.js')
 
   const jestOptions = {
     stdio: 'pipe',
-    env: Object.assign({}, process.env, ENV)
+    env: Object.assign({}, ENV, process.env)
   }
 
   const jest = spawn('jest', jestArguments, jestOptions)

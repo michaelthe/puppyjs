@@ -47,7 +47,7 @@ describe('api', function () {
   })
 
   it('should receive the new messages', async () => {
-    helpers.updateWS({somemessage: {message: 'some new message'}})
+    helpers.updateWS({ somemessage: { message: 'some new message' } })
     await page.waitFor(100)
 
     await page.reload()
