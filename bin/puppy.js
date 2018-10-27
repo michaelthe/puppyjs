@@ -11,7 +11,7 @@ const findFreePort = require('find-free-port')
 const logo = require('../src/logo/logo')
 const help = require('../src/help/help')
 const version = require('../package').version
-const charcoal = require('../src/charcoal')
+const charcoal = require('../src/libs/charcoal')
 const puppyConfig = require('../puppy.config.js')
 
 ;(async () => {
@@ -20,7 +20,7 @@ const puppyConfig = require('../puppy.config.js')
   const jestConfigFile = path.resolve(__dirname, '..', 'config/jest.config.js')
 
   // args
-  const args = minimist(process.argv.slice(2), { boolean: ['h', 'help', 'version', 'headless'] })
+  const args = minimist(process.argv.slice(2), {boolean: ['h', 'help', 'version', 'headless']})
 
   if (args.version) {
     return charcoal.info('Version:', version)
@@ -138,7 +138,8 @@ const puppyConfig = require('../puppy.config.js')
     env: Object.assign({}, ENV, process.env)
   }
 
-  const jest = spawn('jest', jestArguments, jestOptions)
+  const jestBin = path.resolve(__dirname, '../node_modules/jest/bin/jest.js')
+  const jest = spawn(jestBin, jestArguments, jestOptions)
 
   jest.stdout.pipe(process.stdout)
   jest.stderr.pipe(process.stderr)
