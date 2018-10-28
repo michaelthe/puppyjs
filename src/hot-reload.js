@@ -51,25 +51,25 @@ async function isFile (basepath, filePath) {
   })
 }
 
-async function injectCodeHandler (opts, req, res, next) {
+async function injectCodeHandler (req, res, next) {
   let pathname = url.parse(req.url).pathname
   let extension = path.extname(pathname)
 
-  if (opts.entryPointFile && extension === '') {
-    pathname = `/${opts.entryPointFile}`
+  if (process.env.INDEX_FILE && extension === '') {
+    pathname = `/${process.env.INDEX_FILE}`
   }
 
-  const dir = await isDir(opts.pathToWatch, pathname)
-  const file = await isFile(opts.pathToWatch, pathname)
+  const dir = await isDir(process.env.STATIC_DIR, pathname)
+  const file = await isFile(process.env.STATIC_DIR, pathname)
   const exists = dir || file
 
-  if (!exists && !opts.entryPointFile) {
+  if (!exists && !process.env.INDEX_FILE) {
     return next()
   }
 
   let injectableTag = null
 
-  send(req, pathname, { root: opts.pathToWatch })
+  send(req, pathname, { root: process.env.STATIC_DIR })
     .on('error', err => {
       res.statusCode = err.status || 500
       res.end(err.message)
@@ -105,7 +105,7 @@ async function injectCodeHandler (opts, req, res, next) {
         return
       }
 
-      const INJECTED_CODE = clientLoader(opts.socketAddress)
+      const INJECTED_CODE = clientLoader(process.env.WS_URL)
       const len = INJECTED_CODE.length + res.getHeader('Content-Length')
       res.setHeader('Content-Length', len)
 
