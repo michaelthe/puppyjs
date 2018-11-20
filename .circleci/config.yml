@@ -23,7 +23,7 @@ jobs:
 
       - run:
           name: Running eslint standard style
-          command: npm run eslint
+          command: npm run lint
 
       - save_cache:
           key: node_modules-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}

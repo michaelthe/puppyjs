@@ -9,7 +9,8 @@
     "test": "node bin/puppy.js test --headless --",
     "test-verbose": "node bin/puppy.js test --headless --verbose --",
     "release": "scripts/release.sh",
-    "lint": "eslint . --fix"
+    "lint": "eslint .",
+    "lint:fix": "npm run lint -- --fix"
   },
   "bin": {
     "puppy": "bin/puppy.js"

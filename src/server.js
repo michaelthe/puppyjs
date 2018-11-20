@@ -33,8 +33,8 @@ charcoal.info(`Puppy static index file: ${process.env.INDEX_FILE}.`)
 
 charcoal.info(`Puppy is listening on port ${process.env.INTERNAL_PORT}.`)
 
-charcoal.info(`Puppy WS port is: ${process.env.WS_PORT }.`)
-charcoal.info(`Puppy API port is: ${process.env.API_PORT }.`)
+charcoal.info(`Puppy WS port is: ${process.env.WS_PORT}.`)
+charcoal.info(`Puppy API port is: ${process.env.API_PORT}.`)
 charcoal.info(`Puppy static port is: ${process.env.PORT}.`)
 
 for (let port of Object.keys(apps)) {

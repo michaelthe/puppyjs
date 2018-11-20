@@ -20,7 +20,7 @@ const puppyConfig = require('../puppy.config.js')
   const jestConfigFile = path.resolve(__dirname, '..', 'config/jest.config.js')
 
   // args
-  const args = minimist(process.argv.slice(2), {boolean: ['h', 'help', 'version', 'headless']})
+  const args = minimist(process.argv.slice(2), { boolean: ['h', 'help', 'version', 'headless'] })
 
   if (args.version) {
     return charcoal.info('Version:', version)
