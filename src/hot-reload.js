@@ -105,7 +105,7 @@ async function injectCodeHandler (req, res, next) {
         return
       }
 
-      const INJECTED_CODE = clientLoader(process.env.WS_URL)
+      const INJECTED_CODE = clientLoader('/hot-reload', process.env.INTERNAL_PORT)
       const len = INJECTED_CODE.length + res.getHeader('Content-Length')
       res.setHeader('Content-Length', len)
 

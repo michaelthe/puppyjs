@@ -20,7 +20,7 @@
 
   if ('WebSocket' in window) {
     var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://'
-    var address = protocol + window.location.host + '/SOCKET_ADDRESS'
+    var address = protocol + window.location.hostname + ':PORTPATH'
     var socket = new window.WebSocket(address)
 
     socket.onmessage = msg => msg.data === 'stylesReload' ? refreshCSS() : window.location.reload()

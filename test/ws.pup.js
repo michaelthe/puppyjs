@@ -32,18 +32,11 @@ describe('api', function () {
 
   it('should show the emitted message', async () => {
     await page.waitFor(() => $('.ws-default').text().match(/notification/))
-    let msg = await page.evaluate(() => $('.ws-default').text())
-    expect(msg).toContain('"text":"I am a notification"')
 
     await puppy.emit('emitted message')
-
-    await page.waitFor(() => $('.ws-default').text().match(/emitted message/i))
-    msg = await page.evaluate(() => $('.ws-default').text())
-    expect(msg.match(/message/i)).toBeTruthy()
+    await page.waitFor(() => $('.ws-emitted').text().match(/emitted message/i))
 
     await page.waitFor(() => [1, 2, 3, 4, 5].map(n => '' + n).includes($('.ws-default').text()))
-    msg = await page.evaluate(() => $('.ws-default').text())
-    expect([1, 2, 3, 4, 5].map(n => '' + n).includes(msg)).toBeTruthy()
   })
 
   it('should receive the new messages', async () => {
@@ -58,12 +51,11 @@ describe('api', function () {
   })
 
   it('should receive hello friend after receiving connected message', async () => {
-    await page.waitFor(500)
+    await page.waitFor(300)
     let result = await page.evaluate(() => $('.ws-connected').text())
-
     expect(result).toBeFalsy()
 
-    await page.waitFor('.ws-connected')
+    await page.waitFor(300)
     result = await page.evaluate(() => $('.ws-connected').text())
     expect(result.match(/hello friend/)).toBeTruthy()
   })
